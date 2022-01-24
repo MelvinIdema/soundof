@@ -23,7 +23,7 @@ export const StyledTile = styled.div(({ variant }) => css`
     pointer-events: none;
   }
   
-  ${variant === 0 &&
+  ${variant === "TILE_BUSH" &&
     css`
       &:before {
         background-image: url(${Bush});
@@ -34,7 +34,7 @@ export const StyledTile = styled.div(({ variant }) => css`
       }
     `}
 
-  ${variant === 1 &&
+  ${variant === "TILE_PATH" &&
   css`
       &:before {
         background-image: url(${Path});
@@ -45,7 +45,7 @@ export const StyledTile = styled.div(({ variant }) => css`
       }
     `}
 
-  ${variant === 2 && css`
+  ${variant === "TILE_CREATABLE" && css`
     outline: 6px dashed #D0DFFF;
     outline-offset: -6px;
     cursor: pointer;
