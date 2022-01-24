@@ -4,6 +4,8 @@ export const StyledMap = styled.div`
   height: 100%;
   width: 100%;
   background-color: #EDFAFF;
+  overflow: hidden;
+  cursor: grab;
 `
 
 export const StyledGrid = styled.div(({ isometric }) => css`

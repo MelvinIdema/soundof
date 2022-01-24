@@ -1,15 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
 import { StyledMap, StyledGrid } from './style';
+import Tile from "../Tile";
 
-export default function Grid(props) {
-  const { isometric, children } = props;
+export default function TileMap(props) {
+  const { isometric, tiles, onTileClick } = props;
   const gridEl = useRef(null);
   const [position, setPosition] = useState({ x: null, y: null });
   const [pressed, setPressed] = useState(false);
 
   /**
-   * When Grid is loaded into the DOM CSS will have centered the Grid.
-   * We take the position of the Grid and put it into the Position state
+   * When TileMap is loaded into the DOM CSS will have centered the TileMap.
+   * We take the position of the TileMap and put it into the Position state
    */
   useEffect(() => {
     if (!gridEl.current) return;
@@ -19,7 +20,7 @@ export default function Grid(props) {
   /**
    * As soon as the Position state changes.
    * This code will run and update the left and top CSS properties
-   * on the Grid Element.
+   * on the TileMap Element.
    */
   useEffect(() => {
     if (!gridEl.current) return;
@@ -49,7 +50,7 @@ export default function Grid(props) {
       onMouseMove={handleMouseMove}
     >
       <StyledGrid isometric={isometric} ref={gridEl}>
-        {children}
+        {tiles.map((row) => row.map((tile) => tile !== 0 && <Tile key={tile.id} onTileClick={() => onTileClick(tile)} tile={tile}/>))}
       </StyledGrid>
     </StyledMap>
   )

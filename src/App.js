@@ -1,38 +1,22 @@
 import { useState, useEffect } from "react";
-import Tile from "./components/Tile";
-import Grid from "./components/Grid";
+// Components
+import TileMap from "./components/TileMap";
+// Helpers
+import generateId from "./helpers/generateId";
+// CSS
 import "./App.css";
 
 function App() {
-  /**
-   * Generates a UUID to prevent same key error
-   * @returns {string}
-   */
-  function uuidv4() {
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
-      /[xy]/g,
-      function (c) {
-        const r = (Math.random() * 16) | 0,
-          v = c === "x" ? r : (r & 0x3) | 0x8;
-        return v.toString(16);
-      }
-    );
-  }
-
   /**
    * Initializes a 2D array and fills it with 0s.
    * For demo Purposes the initial tile is added. In the future we probably want
    * to take tile data from an external API and populate the 2D array accordingly.
    * This means that the starting tile will be generated on the server side.
    */
-  const [tiles, setTiles] = useState(
-    new Array(32).fill([]).map(() => new Array(32).fill(0))
-  );
+  const [tiles, setTiles] = useState(new Array(32).fill([]).map(() => new Array(32).fill(0)));
   useEffect(() => {
-    addTile({ id: 1, variant: 1, row: 15, col: 15 });
-    tiles.forEach((row) =>
-      row.forEach((tile) => tile !== 0 && renderCreatables(tile))
-    );
+    addTile({ id: 1, variant: "TILE_BUSH", row: 15, col: 15 });
+    tiles.forEach((row) => row.forEach((tile) => tile !== 0 && renderCreatables(tile)));
   }, []);
 
   /**
@@ -42,11 +26,11 @@ function App() {
    * @param tile
    */
   function renderCreatables(tile) {
-    if (tile.variant === 2) return;
+    if (tile.variant === "TILE_CREATABLE") return;
 
     const defaultCreatable = {
       id: null,
-      variant: 2,
+      variant: "TILE_CREATABLE",
       row: tile.row,
       col: tile.col,
     };
@@ -54,7 +38,7 @@ function App() {
     if (tile.col !== 31 && tiles[tile.row][tile.col + 1] === 0) {
       addTile({
         ...defaultCreatable,
-        id: uuidv4(),
+        id: generateId(),
         col: tile.col + 1,
       });
     }
@@ -62,7 +46,7 @@ function App() {
     if (tile.col !== 0 && tiles[tile.row][tile.col - 1] === 0) {
       addTile({
         ...defaultCreatable,
-        id: uuidv4(),
+        id: generateId(),
         col: tile.col - 1,
       });
     }
@@ -70,7 +54,7 @@ function App() {
     if (tile.row !== 0 && tiles[tile.row - 1][tile.col] === 0) {
       addTile({
         ...defaultCreatable,
-        id: uuidv4(),
+        id: generateId(),
         row: tile.row - 1,
       });
     }
@@ -78,14 +62,14 @@ function App() {
     if (tile.row !== 31 && tiles[tile.row + 1][tile.col] === 0) {
       addTile({
         ...defaultCreatable,
-        id: uuidv4(),
+        id: generateId(),
         row: tile.row + 1,
       });
     }
   }
 
   /**
-   * Adds a tile to the Tiles state.
+   * Adds a tile to the TileMap state.
    * Calls renderCreatables to determine if there should be
    * new creatable tiles added to the board.
    * @param tile
@@ -106,11 +90,9 @@ function App() {
    */
   function createFilled(tile) {
     const plaatjeID = Math.floor(Math.random() * 2);
-    console.log(plaatjeID);
-
     const newTile = {
-      id: uuidv4(),
-      variant: plaatjeID,
+      id: generateId(),
+      variant: plaatjeID === 0 ? "TILE_BUSH" : "TILE_PATH",
       row: tile.row,
       col: tile.col,
     };
@@ -123,15 +105,13 @@ function App() {
    * @param tile
    */
   function handleTileClick(tile) {
-    if (tile.variant === 2) {
+    if (tile.variant === "TILE_CREATABLE") {
       createFilled(tile);
     }
   }
 
   return (<>
-      <Grid isometric>
-        {tiles.map((row) => row.map((tile) => tile !== 0 && <Tile key={tile.id} onTileClick={() => handleTileClick(tile)} tile={tile}/>))}
-      </Grid>
+      <TileMap onTileClick={handleTileClick} tiles={tiles} isometric/>
   </>);
 }
 

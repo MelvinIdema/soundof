@@ -18,12 +18,3 @@
     background: #538E20;
     transform: skewY(45deg) translateY(calc(15px / 2));
 } */
-
-.object {
-    position: absolute;
-    z-index: 3;
-}
-.screenshot {
-    position: absolute;
-    z-index: 0;
-}
