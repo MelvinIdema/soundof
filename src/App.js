@@ -4,6 +4,7 @@ import Bush from "./bush.png";
 
 import io from "socket.io-client";
 import { TileMenu } from "./components/TileMenu/TileMenu";
+import { FilterMenu } from "./components/FilterMenu/FilterMenu";
 const socket = io.connect("http://localhost:3001");
 
 function App() {
@@ -29,7 +30,7 @@ function App() {
     function uuidv4() {
         return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
             /[xy]/g,
-            function(c) {
+            function (c) {
                 const r = (Math.random() * 16) | 0,
                     v = c === "x" ? r : (r & 0x3) | 0x8;
                 return v.toString(16);
@@ -188,23 +189,24 @@ function App() {
         }
     }
 
-    return ( <
-        >
-        <
-        TileMenu / >
-        <
-        div className = "map"
-        onMouseDown = { handleMouseDown }
-        onMouseUp = { handleMouseUp }
-        onMouseMove = { handleMouseMove } >
-        <
-        div className = "grid isometric"
-        ref = { gridEl } > { " " } {
-            tiles.map((row) =>
-                row.map(
-                    (tile) =>
-                    tile !== 0 && ( <
-                        div className = { `tile ${
+    return (
+        <>
+            <TileMenu />
+            <FilterMenu />
+            <div
+                className="map"
+                onMouseDown={handleMouseDown}
+                onMouseUp={handleMouseUp}
+                onMouseMove={handleMouseMove}
+            >
+                <div className="grid isometric" ref={gridEl}>
+                    {" "}
+                    {tiles.map((row) =>
+                        row.map(
+                            (tile) =>
+                                tile !== 0 && (
+                                    <div
+                                        className={`tile ${
                                             tile.filled ? tile.class : ""
                                         } ${
                                             tile.id === 1 ? "tile__start" : ""
@@ -212,25 +214,21 @@ function App() {
                                             tile.creatable
                                                 ? "tile__creatable"
                                                 : ""
-                                        }` }
-                        key = { tile.id }
-                        id = { tile.id }
-                        style = {
-                            {
-                                gridColumn: tile.col + 1,
-                                gridRow: tile.row + 1,
-                            }
-                        }
-                        onClick = {
-                            () => handleTileClick(tile) }
-                        />
-                    )
-                )
-            )
-        } { " " } <
-        /div>{" "} <
-        /div>{" "} <
-        />
+                                        }`}
+                                        key={tile.id}
+                                        id={tile.id}
+                                        style={{
+                                            gridColumn: tile.col + 1,
+                                            gridRow: tile.row + 1,
+                                        }}
+                                        onClick={() => handleTileClick(tile)}
+                                    />
+                                )
+                        )
+                    )}{" "}
+                </div>{" "}
+            </div>{" "}
+        </>
     );
 }
 

@@ -1,22 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { YoutubeSearch } from "./YoutubeSearch";
 import {
-    TileMenuWrapper,
+    FilterMenuWrapper,
     Button,
     H1,
-    TextArea,
     TextInput,
     RadioButton,
     UnorderedList,
     DropDownMenu,
-    Triangle,
 } from "./style";
 
-export const TileMenu = ({}) => {
-    //useStates
-    const [currentTitle, setCurrentTitle] = useState("");
-    const [currentStory, setCurrentStory] = useState("");
-    const [storyList, setStoryList] = useState([]); //
+import io from "socket.io-client";
+const socket = io.connect("http://localhost:3001");
+
+export const FilterMenu = ({}) => {
     const genres = [
         "Kies het genre van uw liedje",
         "Country",
@@ -33,16 +29,6 @@ export const TileMenu = ({}) => {
     const [currentGenre, setCurrentGenre] = useState(genres[0]);
     const emotions = ["angry", "sad", "neutral", "happy", "overjoyed"];
     const [currentEmotion, setCurrentEmotion] = useState(emotions[2]);
-    const [songData, setSongData] = useState();
-
-    /**
-     * Gets data from YoutubeSearch component (child) and sends it to TileMenu(parent)
-     * @param {*} youtubeVideoData
-     */
-    const moveData = (youtubeVideoData) => {
-        setSongData(youtubeVideoData);
-        console.log(songData);
-    };
 
     /**
      * Sets currentEmotion based on selected radio button
@@ -60,60 +46,9 @@ export const TileMenu = ({}) => {
         setCurrentGenre(e.target.value);
     };
 
-    /**
-     * Sends the story data to the websocket server
-     */
-    const sendStory = async () => {
-        if (currentStory !== "") {
-            const storyData = {
-                room: 1,
-                title: currentTitle,
-                story: currentStory,
-                emotion: currentEmotion,
-                genre: currentGenre,
-                songData: songData,
-                time:
-                    new Date(Date.now()).getUTCDate() +
-                    "-" +
-                    (new Date(Date.now()).getMonth() + 1) +
-                    "-" +
-                    new Date(Date.now()).getFullYear() +
-                    " " +
-                    new Date(Date.now()).getHours() +
-                    ":" +
-                    new Date(Date.now()).getMinutes(),
-            };
-
-            console.log(storyData);
-
-            // await socket.emit("send_story", storyData);
-            setStoryList((list) => [...list, storyData]);
-        }
-    };
-
     return (
-        <TileMenuWrapper>
-            <H1> Creëer uw Huisje </H1>
-            <TextInput
-                normal
-                type="text"
-                maxlength="140"
-                minlength="3"
-                value={currentTitle}
-                placeholder="Vul hier de titel in van uw verhaal"
-                onChange={(event) => {
-                    setCurrentTitle(event.target.value);
-                }}
-            />
-            <TextArea
-                type="text"
-                maxlength="140"
-                minlength="3"
-                placeholder="Vul hier uw verhaal in"
-                onChange={(event) => {
-                    setCurrentStory(event.target.value);
-                }}
-            />
+        <FilterMenuWrapper>
+            <h1> Filter </h1>
             <UnorderedList>
                 <li>
                     <RadioButton
@@ -158,11 +93,7 @@ export const TileMenu = ({}) => {
                     return <option value={d}> {d} </option>;
                 })}
             </DropDownMenu>
-            <YoutubeSearch onMoveData={moveData} />
-            <Button primary onClick={sendStory}>
-                Plaats mijn Huisje
-            </Button>
-            <Triangle />
-        </TileMenuWrapper>
+            <Button primary> 🔍 </Button>
+        </FilterMenuWrapper>
     );
 };

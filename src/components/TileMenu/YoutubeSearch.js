@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, TextInput } from "./style";
+import { Button, TextInput, ResponsiveVideo, iFrame } from "./style";
 
 const YOUTUBE_API = "https://www.googleapis.com/youtube/v3";
 const YOUTUBE_API_KEY = "AIzaSyBQQhP2Vn44Aun7rBOjoTURrVgBJjVtF6o";
@@ -81,17 +81,17 @@ export const YoutubeSearch = (props) => {
 
     return (
         <div>
-            <div className="video-responsive">
-                <iframe
-                    width="853"
-                    height="480"
+            <ResponsiveVideo>
+                <iFrame
+                    width="500"
+                    height="285"
                     src={`https://www.youtube.com/embed/${youtubeVideoID}`}
                     frameBorder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
                     title="Embedded youtube"
                 />
-            </div>
+            </ResponsiveVideo>
             <div>
                 <TextInput
                     search

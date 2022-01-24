@@ -5,7 +5,7 @@ import Neutral from "./assets/neutral.svg";
 import Happy from "./assets/happy.svg";
 import Overjoyed from "./assets/overjoyed.svg";
 
-export const TileMenuWrapper = styled.section`
+export const FilterMenuWrapper = styled.section `
     display: flex;
     flex-direction: column;
     padding: 10px 20px;
@@ -22,7 +22,7 @@ export const TileMenuWrapper = styled.section`
     right: 0;
 `;
 
-export const Button = styled.button`
+export const Button = styled.button `
     font-size: 1em;
     padding: 5px 10px;
     border-radius: 5px;
@@ -35,7 +35,7 @@ export const Button = styled.button`
         css`
             background-color: #71a668;
             color: #ffffff;
-            width: 200px;
+
             &:hover {
                 background-color: #ffffff;
                 color: #71a668;
@@ -59,19 +59,6 @@ export const Button = styled.button`
 export const H1 = styled.h1`
     font-size: 1.8em;
 `;
-export const TextArea = styled.textarea`
-    font-size: 1em;
-    padding: 5px 10px;
-    border-radius: 5px;
-    height: 90px;
-    resize: none;
-    border: none;
-    background-color: #f7f6f3;
-    margin-bottom: 5px;
-    width: 500px;
-    font-family: "Arial";
-    color: #1a3b45;
-`;
 export const TextInput = styled.input`
     border: none;
     padding: 5px 10px;
@@ -89,7 +76,7 @@ export const TextInput = styled.input`
     ${(props) =>
         props.search &&
         css`
-            width: 450px;
+            width: 470px;
         `}
 `;
 export const RadioButton = styled.input`
@@ -153,32 +140,4 @@ export const UnorderedList = styled.ul`
     list-style-type: none;
     display: flex;
     justify-content: center;
-`;
-
-export const Triangle = styled.div`
-    background-color: #fff;
-    clip-path: polygon(100% 0, 50% 50%, 100% 100%);
-    width: 100px;
-    height: 100px;
-    position: absolute;
-    bottom: 50%;
-    z-index: 99;
-    left: -100px;
-`;
-
-export const ResponsiveVideo = styled.div`
-    overflow: hidden;
-    padding-bottom: 56.25%;
-    height: 0;
-    margin-bottom: 10px;
-    max-width: 500px;
-    max-height: 285px;
-    margin: auto;
-`;
-
-export const iFrame = styled.iframe`
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
 `;
