@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
-import "../css/TileMenu.css";
+import { Button, TextInput } from "./style";
 
 const YOUTUBE_API = "https://www.googleapis.com/youtube/v3";
 const YOUTUBE_API_KEY = "AIzaSyBQQhP2Vn44Aun7rBOjoTURrVgBJjVtF6o";
 
-export const YoutubeSearch = ({ props }) => {
+export const YoutubeSearch = (props) => {
     //Youtube API useStates
     const [currentYoutubeKeywords, setCurrentYoutubeKeywords] = useState("");
-    const [youtubeVideoData, setYoutubeVideoData] = useState();
+    const [youtubeSearchData, setYoutubeSearchData] = useState();
 
     const [youtubeVideoID, setYoutubeVideoID] = useState("");
     const [youtubeTitle, setYoutubeTitle] = useState("");
@@ -29,7 +29,7 @@ export const YoutubeSearch = ({ props }) => {
                 throw new Error("error");
             })
             .then((data) => {
-                setYoutubeVideoData(data);
+                setYoutubeSearchData(data);
             })
             .catch(() => console.log("Whoops! Something went wrong"));
     }
@@ -39,7 +39,7 @@ export const YoutubeSearch = ({ props }) => {
      */
     async function getYoutubeTags() {
         await fetch(
-            `${YOUTUBE_API}/videos?part=id%2C+snippet&id=${youtubeVideoData.items[0].id.videoId}&key=${YOUTUBE_API_KEY}`
+            `${YOUTUBE_API}/videos?part=id%2C+snippet&id=${youtubeSearchData.items[0].id.videoId}&key=${YOUTUBE_API_KEY}`
         )
             .then((response) => {
                 if (response.ok) {
@@ -57,32 +57,44 @@ export const YoutubeSearch = ({ props }) => {
     /**
      *
      */
-    const getSongData = () => {
-        searchYoutubeWithKeywords();
-        setYoutubeVideoID(youtubeVideoData.items[0].id.videoId);
-        setYoutubeTitle(youtubeVideoData.items[0].snippet.title);
+    const getSongData = async () => {
+        await searchYoutubeWithKeywords();
+        setYoutubeVideoID(youtubeSearchData.items[0].id.videoId);
+        setYoutubeTitle(youtubeSearchData.items[0].snippet.title);
         setYoutubeThumbnail(
-            youtubeVideoData.items[0].snippet.thumbnails.high.url
+            youtubeSearchData.items[0].snippet.thumbnails.high.url
         );
 
-        setCurrentYoutubeKeywords(youtubeTitle);
+        await getYoutubeTags(youtubeSearchData.items[0].id.videoId);
 
-        getYoutubeTags(youtubeVideoData.items[0].id.videoId);
+        const youtubeVideoData = {
+            id: youtubeVideoID,
+            title: youtubeTitle,
+            thumbnail: youtubeThumbnail,
+            tags: youtubeTags,
+        };
 
-        console.log("youtube.com/watch?v=" + youtubeVideoID);
-        console.log(youtubeTitle);
-        console.log(youtubeThumbnail);
-        console.log(youtubeTags);
+        props.onMoveData(youtubeVideoData);
     };
 
     //TODO compare youtubeTags with genre array
 
     return (
         <div>
-            <img alt={youtubeTitle} src={youtubeThumbnail}></img>
+            <div className="video-responsive">
+                <iframe
+                    width="853"
+                    height="480"
+                    src={`https://www.youtube.com/embed/${youtubeVideoID}`}
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    title="Embedded youtube"
+                />
+            </div>
             <div>
-                <input
-                    type="search"
+                <TextInput
+                    search
                     maxlength="140"
                     minlength="3"
                     value={currentYoutubeKeywords}
@@ -90,13 +102,10 @@ export const YoutubeSearch = ({ props }) => {
                     onChange={(event) => {
                         setCurrentYoutubeKeywords(event.target.value);
                     }}
-                ></input>
-                <button
-                    id="searchYoutube"
-                    onClick={() => props.changeWord("txai")}
-                >
+                ></TextInput>
+                <Button secondary onClick={getSongData}>
                     🔍
-                </button>
+                </Button>
             </div>
         </div>
     );
