@@ -33,7 +33,7 @@ function App() {
     new Array(32).fill([]).map(() => new Array(32).fill(0))
   );
   useEffect(() => {
-    addTile({ id: 1, filled: true, variant: 1, row: 15, col: 15 });
+    addTile({ id: 1, variant: 1, row: 15, col: 15 });
     tiles.forEach((row) =>
       row.forEach((tile) => tile !== 0 && renderCreatables(tile))
     );
@@ -86,7 +86,6 @@ function App() {
     const defaultCreatable = {
       id: null,
       variant: 2,
-      filled: false,
       row: tile.row,
       col: tile.col,
     };
@@ -151,12 +150,10 @@ function App() {
     const newTile = {
       id: uuidv4(),
       variant: plaatjeID,
-      filled: true,
       row: tile.row,
       col: tile.col,
     };
     addTile(newTile);
-    console.log(newTile);
   }
 
   /**

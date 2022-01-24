@@ -14,22 +14,23 @@ export const StyledTile = styled.div(({ variant }) => css`
   }
   
   &:before {
-    width: 431px;
-    height: 269px;
-    content: " ";
+    content: "";
     position: absolute;
-    top: -38px;
-    left: -2px;
+    transform: translate(-50%, -50%) rotateX(0) rotateZ(-45deg);
     background-repeat: no-repeat;
-    transform: translateX(0) translateY(0) translateZ(0) rotateX(-60deg) rotateZ(-22deg);
-    z-index: 1;
-    background-size: 51% 39%;
+    background-size: 100% 100%;
+    background-position: center;
+    pointer-events: none;
   }
   
   ${variant === 0 &&
     css`
       &:before {
         background-image: url(${Bush});
+        width: 163px;
+        height: 201px;
+        top: 45px;
+        left: 45px;
       }
     `}
 
@@ -37,6 +38,10 @@ export const StyledTile = styled.div(({ variant }) => css`
   css`
       &:before {
         background-image: url(${Path});
+        width: 164px;
+        height: 188px;
+        top: 49px;
+        left: 49px;
       }
     `}
 
@@ -44,6 +49,7 @@ export const StyledTile = styled.div(({ variant }) => css`
     outline: 6px dashed #D0DFFF;
     outline-offset: -6px;
     cursor: pointer;
+    background-color: transparent;
 
     &:after {
       content: '+';
