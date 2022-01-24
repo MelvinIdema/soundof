@@ -2,8 +2,10 @@ import React, { useState, useEffect } from "react";
 import { YoutubeSearch } from "./YoutubeSearch";
 import {
     TileMenuWrapper,
+    StepWrapper,
     Button,
     H1,
+    P,
     TextArea,
     TextInput,
     RadioButton,
@@ -14,11 +16,11 @@ import {
 
 export const TileMenu = ({}) => {
     //useStates
-    const [currentTitle, setCurrentTitle] = useState("");
+    const [currentTitle, setCurrentTitle] = useState("Titel");
     const [currentStory, setCurrentStory] = useState("");
     const [storyList, setStoryList] = useState([]); //
     const genres = [
-        "Kies het genre van uw liedje",
+        "Welk genre heeft jouw gekozen lied?",
         "Country",
         "Electronisch",
         "Hip-Hop",
@@ -32,8 +34,11 @@ export const TileMenu = ({}) => {
     ];
     const [currentGenre, setCurrentGenre] = useState(genres[0]);
     const emotions = ["angry", "sad", "neutral", "happy", "overjoyed"];
-    const [currentEmotion, setCurrentEmotion] = useState(emotions[2]);
+    const [currentEmotion, setCurrentEmotion] = useState("");
     const [songData, setSongData] = useState();
+
+    const [menuTitle, setMenuTitle] = useState("Creëer je huisje");
+    const [IsStepWrapperHidden, hideStepWrapper] = useState(false);
 
     /**
      * Gets data from YoutubeSearch component (child) and sends it to TileMenu(parent)
@@ -41,15 +46,37 @@ export const TileMenu = ({}) => {
      */
     const moveData = (youtubeVideoData) => {
         setSongData(youtubeVideoData);
-        console.log(songData);
+        compareTagsWithGenres(songData);
     };
+
+    /**
+     * Compare youtubeTags with genre array
+     */
+    const compareTagsWithGenres = (songData) => {
+        compareArrays(songData.tags, genres);
+    };
+
+    /**
+     * Compares 2 arrays
+     * @param {*} arr1
+     * @param {*} arr2
+     */
+    function compareArrays(arr1, arr2) {
+        arr1.forEach((var1) => {
+            arr2.forEach((var2) => {
+                if (var1.includes(var2)) {
+                    setCurrentGenre(var2);
+                }
+            });
+        });
+    }
 
     /**
      * Sets currentEmotion based on selected radio button
      * @param {*} e
      */
     const handleEmotion = (e) => {
-        setCurrentEmotion(e.target.className);
+        setCurrentEmotion(e.target.value);
     };
 
     /**
@@ -61,7 +88,7 @@ export const TileMenu = ({}) => {
     };
 
     /**
-     * Sends the story data to the websocket server
+     * Sends the story data to the server
      */
     const sendStory = async () => {
         if (currentStory !== "") {
@@ -86,82 +113,140 @@ export const TileMenu = ({}) => {
 
             console.log(storyData);
 
-            // await socket.emit("send_story", storyData);
             setStoryList((list) => [...list, storyData]);
+        }
+    };
+
+    /**
+     * Goes to the next step of creating a house
+     */
+    const goToNextStep = () => {
+        if (
+            currentTitle !== "" &&
+            currentStory !== "" &&
+            currentGenre !== genres[0] &&
+            currentEmotion !== ""
+        ) {
+            setMenuTitle("Kies een ontwerp");
+            hideStepWrapper(true);
         }
     };
 
     return (
         <TileMenuWrapper>
-            <H1> Creëer uw Huisje </H1>
-            <TextInput
-                normal
-                type="text"
-                maxlength="140"
-                minlength="3"
-                value={currentTitle}
-                placeholder="Vul hier de titel in van uw verhaal"
-                onChange={(event) => {
-                    setCurrentTitle(event.target.value);
-                }}
-            />
-            <TextArea
-                type="text"
-                maxlength="140"
-                minlength="3"
-                placeholder="Vul hier uw verhaal in"
-                onChange={(event) => {
-                    setCurrentStory(event.target.value);
-                }}
-            />
-            <UnorderedList>
-                <li>
-                    <RadioButton
-                        angry
-                        type="radio"
-                        name="emotion"
-                        value={emotions[0]}
-                        onChange={handleEmotion}
+            <H1> {menuTitle} </H1>
+            {IsStepWrapperHidden === false && (
+                <StepWrapper>
+                    <TextInput
+                        normal
+                        type="text"
+                        maxlength="140"
+                        minlength="3"
+                        placeholder="Vul hier de titel in van je verhaal"
+                        onChange={(event) => {
+                            setCurrentTitle(event.target.value);
+                        }}
                     />
-                    <RadioButton
-                        sad
-                        type="radio"
-                        name="emotion"
-                        value={emotions[1]}
-                        onChange={handleEmotion}
+                    <YoutubeSearch onMoveData={moveData} />
+                    <DropDownMenu onChange={(e) => handleGenre(e)}>
+                        {genres.map((d) => {
+                            return (
+                                <option
+                                    value={d}
+                                    selected={currentGenre === d ? true : false}
+                                >
+                                    {" "}
+                                    {d}{" "}
+                                </option>
+                            );
+                        })}
+                    </DropDownMenu>
+                    <TextArea
+                        type="text"
+                        maxlength="140"
+                        minlength="3"
+                        placeholder="Wat betekent dit lied voor jou?"
+                        onChange={(event) => {
+                            setCurrentStory(event.target.value);
+                        }}
                     />
-                    <RadioButton
-                        neutral
-                        type="radio"
-                        name="emotion"
-                        value={emotions[2]}
-                        onChange={handleEmotion}
-                    />
-                    <RadioButton
-                        happy
-                        type="radio"
-                        name="emotion"
-                        value={emotions[3]}
-                        onChange={handleEmotion}
-                    />
-                    <RadioButton
-                        overjoyed
-                        type="radio"
-                        name="emotion"
-                        value={emotions[4]}
-                        onChange={handleEmotion}
-                    />
-                </li>
-            </UnorderedList>
-            <DropDownMenu onChange={(e) => handleGenre(e)}>
-                {genres.map((d) => {
-                    return <option value={d}> {d} </option>;
-                })}
-            </DropDownMenu>
-            <YoutubeSearch onMoveData={moveData} />
-            <Button primary onClick={sendStory}>
-                Plaats mijn Huisje
-            </Button>
+                    <P>Welke emotie wekt dit lied bij jou op?</P>
+                    <UnorderedList>
+                        <li>
+                            <RadioButton
+                                angry
+                                type="radio"
+                                name="emotion"
+                                value={emotions[0]}
+                                onChange={handleEmotion}
+                            />
+                            <RadioButton
+                                sad
+                                type="radio"
+                                name="emotion"
+                                value={emotions[1]}
+                                onChange={handleEmotion}
+                            />
+                            <RadioButton
+                                neutral
+                                type="radio"
+                                name="emotion"
+                                value={emotions[2]}
+                                onChange={handleEmotion}
+                            />
+                            <RadioButton
+                                happy
+                                type="radio"
+                                name="emotion"
+                                value={emotions[3]}
+                                onChange={handleEmotion}
+                            />
+                            <RadioButton
+                                overjoyed
+                                type="radio"
+                                name="emotion"
+                                value={emotions[4]}
+                                onChange={handleEmotion}
+                            />
+                        </li>
+                    </UnorderedList>
+                    <Button secondary onClick={goToNextStep}>
+                        Kies een ontwerp
+                    </Button>
+                </StepWrapper>
+            )}
+            {IsStepWrapperHidden === true && (
+                <StepWrapper>
+                    <p>{currentTitle}</p>
+                    <p>Genre: {currentGenre}</p>
+
+                    {currentEmotion === emotions[0] && (
+                        <RadioButton angry type="radio" />
+                    )}
+                    {currentEmotion === emotions[1] && (
+                        <RadioButton sad type="radio" />
+                    )}
+                    {currentEmotion === emotions[2] && (
+                        <RadioButton neutral type="radio" />
+                    )}
+                    {currentEmotion === emotions[3] && (
+                        <RadioButton happy type="radio" />
+                    )}
+                    {currentEmotion === emotions[4] && (
+                        <RadioButton overjoyed type="radio" />
+                    )}
+
+                    <div>
+                        <Button secondary>⬅️</Button>
+                        <img alt="Huis ontwerp"></img>
+                        <Button secondary>➡️</Button>
+                    </div>
+
+                    <Button primary onClick={console.log("hallo")}>
+                        Plaats je huisje
+                    </Button>
+                </StepWrapper>
+            )}
             <Triangle />
         </TileMenuWrapper>
     );

@@ -22,6 +22,12 @@ export const TileMenuWrapper = styled.section`
     right: 0;
 `;
 
+export const StepWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+`;
+
 export const Button = styled.button`
     font-size: 1em;
     padding: 5px 10px;
@@ -58,6 +64,9 @@ export const Button = styled.button`
 
 export const H1 = styled.h1`
     font-size: 1.8em;
+`;
+export const P = styled.p`
+    font-size: 1em;
 `;
 export const TextArea = styled.textarea`
     font-size: 1em;

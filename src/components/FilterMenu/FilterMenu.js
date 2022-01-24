@@ -9,9 +9,6 @@ import {
     DropDownMenu,
 } from "./style";
 
-import io from "socket.io-client";
-const socket = io.connect("http://localhost:3001");
-
 export const FilterMenu = ({}) => {
     const genres = [
         "Kies het genre van uw liedje",

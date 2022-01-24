@@ -77,10 +77,23 @@ export const YoutubeSearch = (props) => {
         props.onMoveData(youtubeVideoData);
     };
 
-    //TODO compare youtubeTags with genre array
-
     return (
         <div>
+            <div>
+                <TextInput
+                    search
+                    maxlength="140"
+                    minlength="3"
+                    value={currentYoutubeKeywords}
+                    placeholder="Zoek het lied dat een betekenis heeft voor jou"
+                    onChange={(event) => {
+                        setCurrentYoutubeKeywords(event.target.value);
+                    }}
+                ></TextInput>
+                <Button secondary onClick={getSongData}>
+                    🔍
+                </Button>
+            </div>
             <ResponsiveVideo>
                 <iFrame
                     width="500"
@@ -92,21 +105,6 @@ export const YoutubeSearch = (props) => {
                     title="Embedded youtube"
                 />
             </ResponsiveVideo>
-            <div>
-                <TextInput
-                    search
-                    maxlength="140"
-                    minlength="3"
-                    value={currentYoutubeKeywords}
-                    placeholder="Zoek op Youtube naar uw liedje"
-                    onChange={(event) => {
-                        setCurrentYoutubeKeywords(event.target.value);
-                    }}
-                ></TextInput>
-                <Button secondary onClick={getSongData}>
-                    🔍
-                </Button>
-            </div>
         </div>
     );
 };

@@ -2,26 +2,13 @@ import { useState, useEffect, useRef } from "react";
 import "./App.css";
 import Bush from "./bush.png";
 
-import io from "socket.io-client";
 import { TileMenu } from "./components/TileMenu/TileMenu";
 import { FilterMenu } from "./components/FilterMenu/FilterMenu";
-const socket = io.connect("http://localhost:3001");
 
 function App() {
-    const [room, setRoom] = useState("1");
     const gridEl = useRef(null);
     const [pressed, setPressed] = useState(false);
     const [position, setPosition] = useState({ x: null, y: null });
-
-    const joinRoom = () => {
-        if (room !== "") {
-            socket.emit("join_room", room);
-        }
-    };
-
-    useEffect(() => {
-        joinRoom();
-    }, []);
 
     /**
      * Generates a UUID to prevent same key error
@@ -192,7 +179,7 @@ function App() {
     return (
         <>
             <TileMenu />
-            <FilterMenu />
+            {/* <FilterMenu /> */}
             <div
                 className="map"
                 onMouseDown={handleMouseDown}
