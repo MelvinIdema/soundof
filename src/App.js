@@ -1,28 +1,9 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
+import Tile from "./components/Tile";
+import Grid from "./components/Grid";
 import "./App.css";
-import Bush from "./bush.png";
-
-import io from "socket.io-client";
-import { TileMenu } from "./components/TileMenu";
-const socket = io.connect("http://localhost:3001");
 
 function App() {
-  const [room, setRoom] = useState("1");
-  const gridEl = useRef(null);
-  const [pressed, setPressed] = useState(false);
-  const [position, setPosition] = useState({ x: null, y: null });
-
-    const joinRoom = () => {
-        if (room !== "") {
-            socket.emit("join_room", room);
-        }
-    };
-
-    useEffect(() => {
-       joinRoom();
-       console.log("This is a test for continious deployment on Netlify.");
-    }, []);
-
   /**
    * Generates a UUID to prevent same key error
    * @returns {string}
@@ -48,46 +29,11 @@ function App() {
     new Array(32).fill([]).map(() => new Array(32).fill(0))
   );
   useEffect(() => {
-    addTile({ id: 1, filled: true, creatable: false, row: 15, col: 15 });
+    addTile({ id: 1, variant: 1, row: 15, col: 15 });
     tiles.forEach((row) =>
       row.forEach((tile) => tile !== 0 && renderCreatables(tile))
     );
   }, []);
-
-  /**
-   * When Grid is loaded into the DOM CSS will have centered the Grid.
-   * We take the position of the Grid and put it into the Position state
-   */
-  useEffect(() => {
-    if (!gridEl.current) return;
-    setPosition({ x: gridEl.current.offsetLeft, y: gridEl.current.offsetTop });
-  }, [gridEl]);
-
-  /**
-   * As soon as the Position state changes.
-   * This code will run and update the left and top CSS properties
-   * on the Grid Element.
-   */
-  useEffect(() => {
-    if (!gridEl.current) return;
-    gridEl.current.style.left = `${position.x}px`;
-    gridEl.current.style.top = `${position.y}px`;
-  }, [position]);
-
-  /**
-   * Event Handlers. As soon as the user pressed up or down the Pressed state will toggle.
-   * If the Pressed state is true and the mouse moves; the Position state will be updated.
-   */
-  const handleMouseDown = () => setPressed(true);
-  const handleMouseUp = () => setPressed(false);
-  const handleMouseMove = (event) => {
-    if (pressed) {
-      setPosition({
-        x: position.x + event.movementX,
-        y: position.y + event.movementY,
-      });
-    }
-  };
 
   /**
    * This function takes a tile {object} and checks where on the grid a creatable tile
@@ -96,12 +42,11 @@ function App() {
    * @param tile
    */
   function renderCreatables(tile) {
-    if (tile.creatable === true) return;
+    if (tile.variant === 2) return;
 
     const defaultCreatable = {
       id: null,
-      filled: false,
-      creatable: true,
+      variant: 2,
       row: tile.row,
       col: tile.col,
     };
@@ -165,14 +110,11 @@ function App() {
 
     const newTile = {
       id: uuidv4(),
-      filled: true,
-      creatable: false,
+      variant: plaatjeID,
       row: tile.row,
       col: tile.col,
-      class: "tile__filled" + plaatjeID,
     };
     addTile(newTile);
-    console.log(newTile);
   }
 
   /**
@@ -181,41 +123,15 @@ function App() {
    * @param tile
    */
   function handleTileClick(tile) {
-    if (tile.creatable) {
+    if (tile.variant === 2) {
       createFilled(tile);
     }
   }
 
   return (<>
-    <TileMenu />
-    <div
-      className="map"
-      onMouseDown={handleMouseDown}
-      onMouseUp={handleMouseUp}
-      onMouseMove={handleMouseMove}
-    >
-      <div className="grid isometric" ref={gridEl}>
-        {tiles.map((row) =>
-          row.map(
-            (tile) =>
-              tile !== 0 && (
-                <div
-                  className={`tile ${tile.filled ? tile.class : ""} ${
-                    tile.id === 1 ? "tile__start" : ""
-                  } ${tile.creatable ? "tile__creatable" : ""}`}
-                  key={tile.id}
-                  id={tile.id}
-                  style={{
-                    gridColumn: tile.col + 1,
-                    gridRow: tile.row + 1,
-                  }}
-                  onClick={() => handleTileClick(tile)}
-                />
-              )
-          )
-        )}
-      </div>
-    </div>
+      <Grid isometric>
+        {tiles.map((row) => row.map((tile) => tile !== 0 && <Tile key={tile.id} onTileClick={() => handleTileClick(tile)} tile={tile}/>))}
+      </Grid>
   </>);
 }
 
