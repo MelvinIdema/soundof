@@ -3,8 +3,10 @@ import { useState, useEffect } from "react";
 import TileMap from "./components/TileMap";
 // Helpers
 import generateId from "./helpers/generateId";
-// CSS
-import "./App.css";
+// Database
+import db from "./firebase/firebase.config";
+import { createTile } from "./firebase";
+import { onSnapshot, collection } from "firebase/firestore";
 
 function App() {
   /**
@@ -14,10 +16,18 @@ function App() {
    * This means that the starting tile will be generated on the server side.
    */
   const [tiles, setTiles] = useState(new Array(32).fill([]).map(() => new Array(32).fill(0)));
-  useEffect(() => {
-    addTile({ id: 1, variant: "TILE_BUSH", row: 15, col: 15 });
-    tiles.forEach((row) => row.forEach((tile) => tile !== 0 && renderCreatables(tile)));
-  }, []);
+    useEffect(() => {
+        onSnapshot(collection(db, "tiles"), snapshot => {
+            const docs = snapshot.docs.map(doc => {
+                const data = doc.data();
+                return {
+                    id: doc.id,
+                    ...data
+                }
+            });
+            docs.forEach(tile => addTile(tile));
+        })
+    }, [])
 
   /**
    * This function takes a tile {object} and checks where on the grid a creatable tile
@@ -32,26 +42,26 @@ function App() {
       id: null,
       variant: "TILE_CREATABLE",
       row: tile.row,
-      col: tile.col,
+      column: tile.column,
     };
 
-    if (tile.col !== 31 && tiles[tile.row][tile.col + 1] === 0) {
+    if (tile.col !== 31 && tiles[tile.row][tile.column + 1] === 0) {
       addTile({
         ...defaultCreatable,
         id: generateId(),
-        col: tile.col + 1,
+        column: tile.column + 1,
       });
     }
 
-    if (tile.col !== 0 && tiles[tile.row][tile.col - 1] === 0) {
+    if (tile.col !== 0 && tiles[tile.row][tile.column - 1] === 0) {
       addTile({
         ...defaultCreatable,
         id: generateId(),
-        col: tile.col - 1,
+        column: tile.column - 1,
       });
     }
 
-    if (tile.row !== 0 && tiles[tile.row - 1][tile.col] === 0) {
+    if (tile.row !== 0 && tiles[tile.row - 1][tile.column] === 0) {
       addTile({
         ...defaultCreatable,
         id: generateId(),
@@ -59,7 +69,7 @@ function App() {
       });
     }
 
-    if (tile.row !== 31 && tiles[tile.row + 1][tile.col] === 0) {
+    if (tile.row !== 31 && tiles[tile.row + 1][tile.column] === 0) {
       addTile({
         ...defaultCreatable,
         id: generateId(),
@@ -77,7 +87,7 @@ function App() {
   function addTile(tile) {
     setTiles(() => {
       const newTiles = [...tiles];
-      newTiles[tile.row][tile.col] = tile;
+      newTiles[tile.row][tile.column] = tile;
       return newTiles;
     });
     renderCreatables(tile);
@@ -88,15 +98,15 @@ function App() {
    * Then it renders the creatables.
    * @param tile
    */
-  function createFilled(tile) {
+  function createRandomTile(tile) {
     const plaatjeID = Math.floor(Math.random() * 2);
     const newTile = {
       id: generateId(),
       variant: plaatjeID === 0 ? "TILE_BUSH" : "TILE_PATH",
       row: tile.row,
-      col: tile.col,
+      column: tile.column,
     };
-    addTile(newTile);
+    createTile(newTile);
   }
 
   /**
@@ -106,7 +116,7 @@ function App() {
    */
   function handleTileClick(tile) {
     if (tile.variant === "TILE_CREATABLE") {
-      createFilled(tile);
+        createRandomTile(tile);
     }
   }
 

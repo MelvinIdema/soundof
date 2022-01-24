@@ -7,7 +7,7 @@ export default function Tile(props) {
     <StyledTile
       id={tile.id}
       style={{
-        gridColumn: tile.col + 1,
+        gridColumn: tile.column + 1,
         gridRow: tile.row + 1,
       }}
       onClick={onTileClick}
