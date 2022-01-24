@@ -1,20 +1,3 @@
-.map {
-    height: 100vh;
-    width: 100vw;
-    background-color: #EDFAFF;
-}
-
-.grid {
-    display: grid;
-    position: absolute;
-    transform: translate(-50%, -50%);
-    top: 50%;
-    left: 50%;
-    grid-template-columns: repeat(32, 115px);
-    grid-template-rows: repeat(32, 115px);
-    user-select: none;
-}
-
 /*
 .tile__filled:after {
     content: "";
@@ -35,11 +18,6 @@
     background: #538E20;
     transform: skewY(45deg) translateY(calc(15px / 2));
 } */
-
-.isometric {
-    transform: translateX(-50%) translateY(-50%) translateZ(3em) rotateX(60deg) rotateZ(45deg);
-    transform-style: preserve-3d;
-}
 
 .object {
     position: absolute;
