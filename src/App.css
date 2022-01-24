@@ -106,3 +106,7 @@
     position: absolute;
     z-index: 3;
 }
+.screenshot {
+    position: absolute;
+    z-index: 0;
+}
