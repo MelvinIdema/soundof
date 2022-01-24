@@ -1,27 +1,12 @@
 import { useState, useEffect, useRef } from "react";
-import "./App.css";
-import Bush from "./bush.png";
-
-import io from "socket.io-client";
+import Tile from "./components/Tile";
 import { TileMenu } from "./components/TileMenu";
-const socket = io.connect("http://localhost:3001");
+import "./App.css";
 
 function App() {
-  const [room, setRoom] = useState("1");
   const gridEl = useRef(null);
   const [pressed, setPressed] = useState(false);
   const [position, setPosition] = useState({ x: null, y: null });
-
-    const joinRoom = () => {
-        if (room !== "") {
-            socket.emit("join_room", room);
-        }
-    };
-
-    useEffect(() => {
-       joinRoom();
-       console.log("This is a test for continious deployment on Netlify.");
-    }, []);
 
   /**
    * Generates a UUID to prevent same key error
@@ -48,7 +33,7 @@ function App() {
     new Array(32).fill([]).map(() => new Array(32).fill(0))
   );
   useEffect(() => {
-    addTile({ id: 1, filled: true, creatable: false, row: 15, col: 15 });
+    addTile({ id: 1, filled: true, variant: 1, row: 15, col: 15 });
     tiles.forEach((row) =>
       row.forEach((tile) => tile !== 0 && renderCreatables(tile))
     );
@@ -96,12 +81,12 @@ function App() {
    * @param tile
    */
   function renderCreatables(tile) {
-    if (tile.creatable === true) return;
+    if (tile.variant === 2) return;
 
     const defaultCreatable = {
       id: null,
+      variant: 2,
       filled: false,
-      creatable: true,
       row: tile.row,
       col: tile.col,
     };
@@ -165,11 +150,10 @@ function App() {
 
     const newTile = {
       id: uuidv4(),
+      variant: plaatjeID,
       filled: true,
-      creatable: false,
       row: tile.row,
       col: tile.col,
-      class: "tile__filled" + plaatjeID,
     };
     addTile(newTile);
     console.log(newTile);
@@ -181,13 +165,12 @@ function App() {
    * @param tile
    */
   function handleTileClick(tile) {
-    if (tile.creatable) {
+    if (tile.variant === 2) {
       createFilled(tile);
     }
   }
 
   return (<>
-    <TileMenu />
     <div
       className="map"
       onMouseDown={handleMouseDown}
@@ -195,25 +178,7 @@ function App() {
       onMouseMove={handleMouseMove}
     >
       <div className="grid isometric" ref={gridEl}>
-        {tiles.map((row) =>
-          row.map(
-            (tile) =>
-              tile !== 0 && (
-                <div
-                  className={`tile ${tile.filled ? tile.class : ""} ${
-                    tile.id === 1 ? "tile__start" : ""
-                  } ${tile.creatable ? "tile__creatable" : ""}`}
-                  key={tile.id}
-                  id={tile.id}
-                  style={{
-                    gridColumn: tile.col + 1,
-                    gridRow: tile.row + 1,
-                  }}
-                  onClick={() => handleTileClick(tile)}
-                />
-              )
-          )
-        )}
+        {tiles.map((row) => row.map((tile) => tile !== 0 && <Tile key={tile.id} onTileClick={() => handleTileClick(tile)} tile={tile}/>))}
       </div>
     </div>
   </>);

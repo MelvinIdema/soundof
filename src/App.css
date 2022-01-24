@@ -15,68 +15,7 @@
     user-select: none;
 }
 
-.tile {
-    position: relative;
-    z-index: 1;
-}
-
-.tile:hover {
-    outline: 6px dashed #D0DFFF;
-    outline-offset: -6px;
-    cursor: pointer;
-}
-
-.tile__start {
-    /*background: #7BC13E !important;*/
-}
-
-.tile__creatable {
-    position: relative;
-    outline: 6px dashed #D0DFFF;
-    outline-offset: -6px;
-    cursor: pointer;
-}
-
-.tile__creatable:after {
-    content: '+';
-    font-size: 64px;
-    color: #D0DFFF;
-    position: absolute;
-    transform: translate(-50%, -50%);
-    top: calc(50% - 4px);
-    left: calc(50% - 4px);
-}
-
-.tile__filled0,
-.tile__filled1 {
-    background-color: #3c3c3c;
-    position: relative;
-}
-
-.tile__filled0:before,
-.tile__filled1:before {
-    width: 431px;
-    height: 269px;
-    content: " ";
-    position: absolute;
-    top: -38px;
-    left: -2px;
-    background-repeat: no-repeat;
-    transform: translateX(0) translateY(0) translateZ(0) rotateX(-60deg) rotateZ(-22deg);
-    z-index: 1;
-    background-size: 51% 39%;
-}
-
-.tile__filled0:before {
-    background-image: url("path_01.png");
-}
-
-.tile__filled1:before {
-    background-image: url("bush.png");
-}
-
-
-/* 
+/*
 .tile__filled:after {
     content: "";
     position: absolute;
