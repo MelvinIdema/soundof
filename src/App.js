@@ -11,15 +11,16 @@ function App() {
   const gridEl = useRef(null);
   const [pressed, setPressed] = useState(false);
   const [position, setPosition] = useState({ x: null, y: null });
-  
+
     const joinRoom = () => {
         if (room !== "") {
             socket.emit("join_room", room);
         }
     };
-    
+
     useEffect(() => {
        joinRoom();
+       console.log("This is a test for continious deployment on Netlify.");
     }, []);
 
   /**
