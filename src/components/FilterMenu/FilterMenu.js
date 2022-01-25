@@ -24,7 +24,7 @@ export const FilterMenu = ({}) => {
         "Rock",
     ];
     const [currentGenre, setCurrentGenre] = useState(genres[0]);
-    const emotions = ["angry", "sad", "neutral", "happy", "overjoyed"];
+    const emotions = ["crying", "sad", "neutral", "happy", "overjoyed"];
     const [currentEmotion, setCurrentEmotion] = useState(emotions[2]);
 
     /**
@@ -49,7 +49,7 @@ export const FilterMenu = ({}) => {
             <UnorderedList>
                 <li>
                     <RadioButton
-                        angry
+                        crying
                         type="radio"
                         name="emotion"
                         value={emotions[0]}

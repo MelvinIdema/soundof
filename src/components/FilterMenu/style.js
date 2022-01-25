@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import Angry from "./assets/angry.svg";
+import Crying from "./assets/crying.svg";
 import Sad from "./assets/sad.svg";
 import Neutral from "./assets/neutral.svg";
 import Happy from "./assets/happy.svg";
@@ -94,9 +94,9 @@ export const RadioButton = styled.input`
         border-radius: 100%;
     }
     ${(props) =>
-        props.angry &&
+        props.crying &&
         css`
-            background-image: url(${Angry});
+            background-image: url(${Crying});
             background-size: cover;
         `}
     ${(props) =>

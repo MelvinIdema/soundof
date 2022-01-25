@@ -90,14 +90,14 @@ export const YoutubeSearch = (props) => {
                         setCurrentYoutubeKeywords(event.target.value);
                     }}
                 ></TextInput>
-                <Button secondary onClick={getSongData}>
+                <Button search onClick={getSongData}>
                     🔍
                 </Button>
             </div>
             <ResponsiveVideo>
                 <iFrame
-                    width="500"
-                    height="285"
+                    width="520"
+                    height="296"
                     src={`https://www.youtube.com/embed/${youtubeVideoID}`}
                     frameBorder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
