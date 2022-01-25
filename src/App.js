@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { css } from "styled-components";
 // Components
 import TileMap from "./components/TileMap";
@@ -8,7 +8,7 @@ import DebugChooser from "./components/DebugChooser";
 import generateId from "./helpers/generateId";
 // Database
 import db from "./firebase/firebase.config";
-import { createTile, updateTile } from "./firebase";
+import { createTile, createTileInfo, updateTile, getTileInfo } from "./firebase";
 import { onSnapshot, collection } from "firebase/firestore";
 import TileInfo from "./components/TileInfo";
 
@@ -20,9 +20,23 @@ const loaderStyle = css`
 `;
 
 function App() {
+    const gridEl = useRef(null);
+    const infoEl = useRef(null);
+
+    // UI States
     const [loading, setLoading] = useState(true);
-    const [variant, setVariant] = useState("TILE_HOUSE_1");
+
+    // Tile Information States
+    const [tileInfoLoading, setTileInfoLoading] = useState(true);
     const [tileInfo, setTileInfo] = useState(null);
+    const [tileInfoPosition, setTileInfoPosition] = useState(null);
+
+    // Drag & Drop States
+    const [pressed, setPressed] = useState(false);
+    const [position, setPosition] = useState({ x: null, y: null });
+
+    // User Generated States
+    const [variant, setVariant] = useState("TILE_HOUSE_1");
 
   /**
    * Initializes a 2D array and fills it with 0s.
@@ -116,14 +130,27 @@ function App() {
    * Then it renders the creatables.
    * @param tile
    */
-  function generateTile(tile) {
+  async function generateTile(tile) {
     const newTile = {
-      id: generateId(),
       variant: variant,
       row: tile.row,
       column: tile.column,
+      tileInfoId: null,
+      views: 1
     };
-    createTile(newTile);
+    const tileId = await createTile(newTile);
+
+    const newTileInfo = {
+        title: `${tileId}`,
+        story: `Information for tile with id ${tileId}`,
+        tileId: tileId
+    }
+    const tileInfoId = await createTileInfo(newTileInfo);
+
+    await updateTile(tileId, {
+        tileInfoId: tileInfoId
+    })
+
   }
 
   /**
@@ -131,18 +158,23 @@ function App() {
    * there's only one tile: the creatable.
    * @param tile
    */
-  function handleTileClick(tile) {
+  async function handleTileClick(tile) {
     if(tile.variant === "TILE_CREATABLE") {
         generateTile(tile);
     }
 
     if(tile.variant !== "TILE_CREATABLE") {
+        setTileInfoLoading(true);
+
         const tileElementRect = document.getElementById(tile.id).getBoundingClientRect();
-        setTileInfo({
-            title: "Test Title",
-            story: "Test Story",
-            position: { top: tileElementRect.top, left: tileElementRect.left }
-        })
+        setTileInfoPosition({ top: tileElementRect.top, left: tileElementRect.left });
+
+        const tileInfoData = await getTileInfo(tile.tileInfoId);
+        setTileInfo(tileInfoData);
+
+        setTileInfoLoading(false);
+
+        updateTile(tile.id, { views: tile.views + 1 })
     }
 
     if(tile.variant === "TILE_HOUSE_1") {
@@ -153,12 +185,65 @@ function App() {
 
   }
 
+    /**
+     * When TileMap is loaded into the DOM CSS will have centered the TileMap.
+     * We take the position of the TileMap and put it into the Position state
+     */
+    useEffect(() => {
+        if (!gridEl.current) return;
+        setPosition({ x: gridEl.current.offsetLeft, y: gridEl.current.offsetTop });
+    }, [gridEl]);
+
+    /**
+     * As soon as the Position state changes.
+     * This code will run and update the left and top CSS properties
+     * on the TileMap Element.
+     */
+    useEffect(() => {
+        if (gridEl.current) {
+            gridEl.current.style.left = `${position.x}px`;
+            gridEl.current.style.top = `${position.y}px`;
+        }
+
+        if(tileInfo) {
+            const tileElementRect = document.getElementById(tileInfo.tileId).getBoundingClientRect();
+            setTileInfoPosition({ top: tileElementRect.top, left: tileElementRect.left })
+        }
+    }, [position]);
+
+    /**
+     * Event Handlers. As soon as the user pressed up or down the Pressed state will toggle.
+     * If the Pressed state is true and the mouse moves; the Position state will be updated.
+     */
+    const handleMouseDown = () => setPressed(true);
+    const handleMouseUp = () => setPressed(false);
+    const handleMouseMove = (event) => {
+        if (pressed) {
+            setPosition({
+                x: position.x + event.movementX,
+                y: position.y + event.movementY,
+            });
+        }
+    };
+
+    function handleCloseClick() {
+        setTileInfo(null);
+    }
+
   return (<>
       <DebugChooser value={variant} onChange={(e) => setVariant(e.currentTarget.value)}/>
-
-      {tileInfo && <TileInfo title={tileInfo.title} story={tileInfo.story} position={tileInfo.position}/>}
       {loading && <Loader size={50} color="#26A65B" css={loaderStyle}/>}
-      <TileMap onTileClick={handleTileClick} tiles={tiles} isometric/>
+      {tileInfo && <TileInfo loading={tileInfoLoading} onCloseClick={handleCloseClick} theRef={infoEl} title={tileInfo.title} story={tileInfo.story} position={tileInfoPosition}/>}
+      <TileMap
+          onMouseDown={handleMouseDown}
+          onMouseUp={handleMouseUp}
+          onMouseMove={handleMouseMove}
+          theRef={gridEl}
+          pressed={pressed}
+          position={position}
+          onTileClick={handleTileClick}
+          tiles={tiles}
+          isometric/>
   </>);
 }
 

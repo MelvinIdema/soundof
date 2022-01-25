@@ -8,7 +8,7 @@ import House12 from "./assets/house_1/huis1.2.png";
 import House13 from "./assets/house_1/huis1.3.png";
 import House14 from "./assets/house_1/huis1.4.png";
 
-export const StyledTile = styled.div(({ variant, level }) => css`
+export const StyledTile = styled.div(({ variant, views }) => css`
   position: relative;
   z-index: 0;
   background-color: #3c3c3c;
@@ -41,7 +41,7 @@ export const StyledTile = styled.div(({ variant, level }) => css`
       }
     `}
     
-    ${variant === "TILE_HOUSE_1" && 
+    ${variant === "TILE_HOUSE_1" &&
         css`
           &:after {
             background-image: url(${House11});
@@ -53,7 +53,7 @@ export const StyledTile = styled.div(({ variant, level }) => css`
         `
     }
 
-    ${variant === "TILE_HOUSE_1" && level === 2 &&
+    ${variant === "TILE_HOUSE_1" && views >= 10 &&
     css`
           &:after {
             background-image: url(${House12});
@@ -65,7 +65,7 @@ export const StyledTile = styled.div(({ variant, level }) => css`
         `
     }
 
-    ${variant === "TILE_HOUSE_1" && level === 3 &&
+    ${variant === "TILE_HOUSE_1" && views >= 20 &&
     css`
           &:after {
             background-image: url(${House13});
@@ -77,7 +77,7 @@ export const StyledTile = styled.div(({ variant, level }) => css`
         `
     }
 
-    ${variant === "TILE_HOUSE_1" && level === 4 &&
+    ${variant === "TILE_HOUSE_1" && views >= 30 &&
     css`
           &:after {
             background-image: url(${House14});

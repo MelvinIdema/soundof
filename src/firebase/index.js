@@ -1,5 +1,5 @@
 import db from "./firebase.config";
-import { collection, doc, getDocs, addDoc, updateDoc } from "firebase/firestore";
+import { collection, doc, getDocs, addDoc, updateDoc, getDoc } from "firebase/firestore";
 
 export const getTiles = async () => {
     const tilesSnapshot = await getDocs(collection(db, "tiles"));
@@ -17,14 +17,41 @@ export const createTile = async (tile) => {
         variant: tile.variant,
         column: tile.column,
         row: tile.row,
-        level: 1
+        views: tile.views
     }
-    await addDoc(collection(db, 'tiles'), theTile);
+    const createdTile = await addDoc(collection(db, 'tiles'), theTile);
+    return createdTile.id;
 }
 
-export const updateTile = async (tile, update) => {
-    const tileRef = doc(db, "tiles", tile.id);
+export const updateTile = async (tileId, update) => {
+    const tileRef = doc(db, "tiles", tileId);
     await updateDoc(tileRef, {
         ...update
     });
+}
+
+/**
+ * Tile Information
+ */
+
+export const createTileInfo = async (tileInfo) => {
+    const theTileInfo = {
+        tileId: tileInfo.tileId,
+        story: tileInfo.story,
+        title: tileInfo.title
+    }
+    const createdTileInfo = await addDoc(collection(db, 'tileInfos'), theTileInfo);
+    return createdTileInfo.id;
+}
+
+export const getTileInfo = async (id) => {
+    const tileInfoSnapshot = await getDoc(doc(db, 'tileInfos', id));
+    if(tileInfoSnapshot.exists()) {
+        return {
+            id: tileInfoSnapshot.id,
+            ...tileInfoSnapshot.data()
+        };
+    } else {
+        return console.error("TileInfo Not Found");
+    }
 }
