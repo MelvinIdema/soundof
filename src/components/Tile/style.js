@@ -41,7 +41,7 @@ export const StyledTile = styled.div(({ variant, level }) => css`
       }
     `}
     
-    ${variant === "TILE_HOUSE_1" && level === 1 && 
+    ${variant === "TILE_HOUSE_1" && 
         css`
           &:after {
             background-image: url(${House11});

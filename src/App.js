@@ -3,11 +3,12 @@ import { css } from "styled-components";
 // Components
 import TileMap from "./components/TileMap";
 import Loader from "react-spinners/PulseLoader";
+import DebugChooser from "./components/DebugChooser";
 // Helpers
 import generateId from "./helpers/generateId";
 // Database
 import db from "./firebase/firebase.config";
-import { createTile } from "./firebase";
+import { createTile, updateTile } from "./firebase";
 import { onSnapshot, collection } from "firebase/firestore";
 
 const loaderStyle = css`
@@ -19,6 +20,8 @@ const loaderStyle = css`
 
 function App() {
     const [loading, setLoading] = useState(true);
+    const [variant, setVariant] = useState("TILE_HOUSE_1");
+
   /**
    * Initializes a 2D array and fills it with 0s.
    * For demo Purposes the initial tile is added. In the future we probably want
@@ -29,10 +32,10 @@ function App() {
     useEffect(() => {
         setLoading(true);
         const unsubscribe = onSnapshot(collection(db, "tiles"), snapshot => {
-            const docs = snapshot.docs.map(doc => {
-                const data = doc.data();
+            const docs = snapshot.docChanges().map(doc => {
+                const data = doc.doc.data();
                 return {
-                    id: doc.id,
+                    id: doc.doc.id,
                     ...data
                 }
             });
@@ -111,11 +114,10 @@ function App() {
    * Then it renders the creatables.
    * @param tile
    */
-  function createRandomTile(tile) {
-    const plaatjeID = Math.floor(Math.random() * 2);
+  function generateTile(tile) {
     const newTile = {
       id: generateId(),
-      variant: plaatjeID === 0 ? "TILE_BUSH" : "TILE_PATH",
+      variant: variant,
       row: tile.row,
       column: tile.column,
     };
@@ -129,11 +131,17 @@ function App() {
    */
   function handleTileClick(tile) {
     if (tile.variant === "TILE_CREATABLE") {
-        createRandomTile(tile);
+        generateTile(tile);
+    }
+    if(tile.variant === "TILE_HOUSE_1") {
+        if(tile.level !== 4) {
+            updateTile(tile, { level: parseInt(tile.level + 1) })
+        }
     }
   }
 
   return (<>
+      <DebugChooser value={variant} onChange={(e) => setVariant(e.currentTarget.value)}/>
       {loading && <Loader size={50} color="#26A65B" css={loaderStyle}/>}
       <TileMap onTileClick={handleTileClick} tiles={tiles} isometric/>
   </>);
