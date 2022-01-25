@@ -14,6 +14,12 @@ export const YoutubeSearch = (props) => {
     const [youtubeThumbnail, setYoutubeThumbnail] = useState("");
     const [youtubeTags, setYoutubeTags] = useState();
 
+    const [isSongError, setSongError] = useState(false);
+
+    const errorStyleInput = {
+        outline: "3px solid red",
+    };
+
     /**
      * Gets the first video from the search results using currentYoutubeKeywords
      */
@@ -89,6 +95,7 @@ export const YoutubeSearch = (props) => {
                     onChange={(event) => {
                         setCurrentYoutubeKeywords(event.target.value);
                     }}
+                    style={isSongError === true ? errorStyleInput : null}
                 ></TextInput>
                 <Button search onClick={getSongData}>
                     🔍

@@ -2,9 +2,9 @@ import { useState, useEffect, useRef } from "react";
 import "./App.css";
 import Bush from "./bush.png";
 
-import { TileMenu } from "./components/TileMenu/TileMenu";
-import { FilterMenu } from "./components/FilterMenu/FilterMenu";
-import { TilePopup } from "./components/TilePopup/TilePopup";
+import { TileMenu } from "./components/TileMenu/index";
+import { FilterMenu } from "./components/FilterMenu/index";
+import { TilePopup } from "./components/TilePopup/index";
 
 function App() {
     const gridEl = useRef(null);
@@ -189,7 +189,6 @@ function App() {
                 onMouseMove={handleMouseMove}
             >
                 <div className="grid isometric" ref={gridEl}>
-                    {" "}
                     {tiles.map((row) =>
                         row.map(
                             (tile) =>
@@ -214,9 +213,9 @@ function App() {
                                     />
                                 )
                         )
-                    )}{" "}
-                </div>{" "}
-            </div>{" "}
+                    )}
+                </div>
+            </div>
         </>
     );
 }

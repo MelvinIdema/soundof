@@ -308,7 +308,7 @@ export const GenreWrapper = styled.div`
     flex-direction: row;
 
     svg {
-        width: 30px;
-        height: 30px;
+        width: 36px;
+        height: 36px;
     }
 `;

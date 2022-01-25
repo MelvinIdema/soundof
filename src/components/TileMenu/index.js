@@ -24,9 +24,10 @@ import house1_4 from "./assets/huis1.4.png";
 
 export const TileMenu = ({}) => {
     //useStates
+    const [storyList, setStoryList] = useState([]); //
     const [currentTitle, setCurrentTitle] = useState("Anoniem");
     const [currentStory, setCurrentStory] = useState("");
-    const [storyList, setStoryList] = useState([]); //
+
     const genres = [
         { name: "Welk genre heeft jouw gekozen lied?", color: "none" },
         { name: "Alternative", color: "#c43c86" },
@@ -41,17 +42,33 @@ export const TileMenu = ({}) => {
         { name: "Rock", color: "#a71522" },
         { name: "Volksmuziek", color: "#cb5225" },
     ];
-    const [currentGenre, setCurrentGenre] = useState(genres[0]);
+    const [currentGenre, setCurrentGenre] = useState(genres[0].name);
     const emotions = ["crying", "sad", "neutral", "happy", "overjoyed"];
     const [currentEmotion, setCurrentEmotion] = useState("");
     const [songData, setSongData] = useState();
 
+    //Styling use states
     const [menuTitle, setMenuTitle] = useState("Creëer je huisje");
     const [IsStepWrapperHidden, hideStepWrapper] = useState(false);
     const [isAnonymous, setAnonymous] = useState(false);
 
+    //House use states
     const houses = [house1_1, house1_2, house1_3, house1_4];
     const [houseIndex, setHouseIndex] = useState(0);
+
+    //Error use states
+    const [isGenreError, setGenreError] = useState(false);
+    const [isEmotionError, setEmotionError] = useState(false);
+    const [isStoryError, setStoryError] = useState(false);
+
+    const errorStyleInput = {
+        outline: "3px solid red",
+    };
+
+    const errorStyleRadio = {
+        outline: "3px solid red",
+        borderRadius: "100%",
+    };
 
     /**
      * Gets data from YoutubeSearch component (child) and sends it to TileMenu(parent)
@@ -84,6 +101,7 @@ export const TileMenu = ({}) => {
      */
     const handleEmotion = (e) => {
         setCurrentEmotion(e.target.value);
+        setEmotionError(false);
     };
 
     /**
@@ -92,6 +110,7 @@ export const TileMenu = ({}) => {
      */
     const handleGenre = (e) => {
         setCurrentGenre(e.target.value);
+        setGenreError(false);
     };
 
     /**
@@ -105,6 +124,25 @@ export const TileMenu = ({}) => {
         ) {
             setMenuTitle("Overzicht");
             hideStepWrapper(true);
+        } else {
+            //Sets error states
+            if (currentStory === "" || currentStory === null) {
+                setStoryError(true);
+            } else {
+                setStoryError(false);
+            }
+            if (currentGenre === genres[0].name) {
+                setGenreError(true);
+            } else {
+                setGenreError(false);
+            }
+            if (currentEmotion === "") {
+                console.log("yo");
+                setEmotionError(true);
+            } else {
+                console.log("bye");
+                setEmotionError(false);
+            }
         }
     };
 
@@ -127,8 +165,7 @@ export const TileMenu = ({}) => {
     const sendStory = async () => {
         if (currentStory !== "") {
             const storyData = {
-                room: 1,
-                title: currentTitle,
+                author: currentTitle,
                 story: currentStory,
                 emotion: currentEmotion,
                 genre: currentGenre,
@@ -161,7 +198,7 @@ export const TileMenu = ({}) => {
                             normal
                             type="text"
                             maxlength="140"
-                            minlength="3"
+                            minlength="0"
                             placeholder="Vul hier jouw naam in (optioneel)"
                             onChange={(event) => {
                                 setCurrentTitle(event.target.value);
@@ -169,7 +206,10 @@ export const TileMenu = ({}) => {
                         />
                     )}
                     <YoutubeSearch onMoveData={moveData} />
-                    <DropDownMenu onChange={(e) => handleGenre(e)}>
+                    <DropDownMenu
+                        onChange={(e) => handleGenre(e)}
+                        style={isGenreError === true ? errorStyleInput : null}
+                    >
                         {genres.map((d) => {
                             return (
                                 <DropDownOption
@@ -184,15 +224,18 @@ export const TileMenu = ({}) => {
                         })}
                     </DropDownMenu>
                     <TextArea
+                        required
                         type="text"
-                        maxlength="140"
+                        maxlength="280"
                         minlength="3"
                         placeholder="Wat betekent dit lied voor jou?"
                         onChange={(event) => {
                             setCurrentStory(event.target.value);
+                            setStoryError(false);
                         }}
+                        style={isStoryError === true ? errorStyleInput : null}
                     />
-                    <P>Welke emotie wekt dit lied bij jou op?</P>
+                    <P> Welke emotie wekt dit lied bij jou op ? </P>
                     <UnorderedList>
                         <li>
                             <RadioButton
@@ -201,6 +244,11 @@ export const TileMenu = ({}) => {
                                 name="emotion"
                                 value={emotions[0]}
                                 onChange={handleEmotion}
+                                style={
+                                    isEmotionError === true
+                                        ? errorStyleRadio
+                                        : null
+                                }
                             />
                             <RadioButton
                                 sad
@@ -208,6 +256,11 @@ export const TileMenu = ({}) => {
                                 name="emotion"
                                 value={emotions[1]}
                                 onChange={handleEmotion}
+                                style={
+                                    isEmotionError === true
+                                        ? errorStyleRadio
+                                        : null
+                                }
                             />
                             <RadioButton
                                 neutral
@@ -215,6 +268,11 @@ export const TileMenu = ({}) => {
                                 name="emotion"
                                 value={emotions[2]}
                                 onChange={handleEmotion}
+                                style={
+                                    isEmotionError === true
+                                        ? errorStyleRadio
+                                        : null
+                                }
                             />
                             <RadioButton
                                 happy
@@ -222,6 +280,11 @@ export const TileMenu = ({}) => {
                                 name="emotion"
                                 value={emotions[3]}
                                 onChange={handleEmotion}
+                                style={
+                                    isEmotionError === true
+                                        ? errorStyleRadio
+                                        : null
+                                }
                             />
                             <RadioButton
                                 overjoyed
@@ -229,6 +292,11 @@ export const TileMenu = ({}) => {
                                 name="emotion"
                                 value={emotions[4]}
                                 onChange={handleEmotion}
+                                style={
+                                    isEmotionError === true
+                                        ? errorStyleRadio
+                                        : null
+                                }
                             />
                         </li>
                     </UnorderedList>
@@ -239,14 +307,13 @@ export const TileMenu = ({}) => {
             )}
             {IsStepWrapperHidden === true && (
                 <StepWrapper>
-                    <P var2>{currentTitle}</P>
-                    <P var2></P>
+                    <P var2> {currentTitle} </P> <P var2> </P>
                     <GenreWrapper>
-                        <P var2>Genre: {currentGenre}</P>
+                        <P var2> Genre: {currentGenre} </P>
                         <svg>
                             <circle
-                                cx="15"
-                                cy="15"
+                                cx="16"
+                                cy="16"
                                 r="15"
                                 stroke="#fff"
                                 strokeWidth="2"
@@ -258,7 +325,6 @@ export const TileMenu = ({}) => {
                             />
                         </svg>
                     </GenreWrapper>
-
                     {currentEmotion === emotions[0] && (
                         <RadioButton crying type="radio" />
                     )}
@@ -274,7 +340,7 @@ export const TileMenu = ({}) => {
                     {currentEmotion === emotions[4] && (
                         <RadioButton overjoyed type="radio" />
                     )}
-                    <H2>Kies een ontwerp</H2>
+                    <H2> Kies een ontwerp </H2>
                     <Carousel>
                         <Button
                             arrowLeft
@@ -286,8 +352,7 @@ export const TileMenu = ({}) => {
                             onClick={() => browseHouses("forward")}
                         ></Button>
                     </Carousel>
-
-                    <Button primary>Plaats je huisje</Button>
+                    <Button primary> Plaats je huisje </Button>
                 </StepWrapper>
             )}
             <Triangle />
