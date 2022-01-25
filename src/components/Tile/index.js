@@ -12,6 +12,7 @@ export default function Tile(props) {
       }}
       onClick={onTileClick}
       variant={tile.variant}
+      level={tile.level}
     />
   )
 }

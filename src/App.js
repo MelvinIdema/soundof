@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
+import { css } from "styled-components";
 // Components
 import TileMap from "./components/TileMap";
+import Loader from "react-spinners/PulseLoader";
 // Helpers
 import generateId from "./helpers/generateId";
 // Database
@@ -8,7 +10,15 @@ import db from "./firebase/firebase.config";
 import { createTile } from "./firebase";
 import { onSnapshot, collection } from "firebase/firestore";
 
+const loaderStyle = css`
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 50%; left: 50%;
+  z-index: 9999;
+`;
+
 function App() {
+    const [loading, setLoading] = useState(true);
   /**
    * Initializes a 2D array and fills it with 0s.
    * For demo Purposes the initial tile is added. In the future we probably want
@@ -17,7 +27,8 @@ function App() {
    */
   const [tiles, setTiles] = useState(new Array(32).fill([]).map(() => new Array(32).fill(0)));
     useEffect(() => {
-        onSnapshot(collection(db, "tiles"), snapshot => {
+        setLoading(true);
+        const unsubscribe = onSnapshot(collection(db, "tiles"), snapshot => {
             const docs = snapshot.docs.map(doc => {
                 const data = doc.data();
                 return {
@@ -26,7 +37,9 @@ function App() {
                 }
             });
             docs.forEach(tile => addTile(tile));
+            setLoading(false);
         })
+        return () => unsubscribe();
     }, [])
 
   /**
@@ -121,6 +134,7 @@ function App() {
   }
 
   return (<>
+      {loading && <Loader size={50} color="#26A65B" css={loaderStyle}/>}
       <TileMap onTileClick={handleTileClick} tiles={tiles} isometric/>
   </>);
 }
