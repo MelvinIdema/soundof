@@ -10,6 +10,7 @@ import generateId from "./helpers/generateId";
 import db from "./firebase/firebase.config";
 import { createTile, updateTile } from "./firebase";
 import { onSnapshot, collection } from "firebase/firestore";
+import TileInfo from "./components/TileInfo";
 
 const loaderStyle = css`
   position: absolute;
@@ -21,6 +22,7 @@ const loaderStyle = css`
 function App() {
     const [loading, setLoading] = useState(true);
     const [variant, setVariant] = useState("TILE_HOUSE_1");
+    const [tileInfo, setTileInfo] = useState(null);
 
   /**
    * Initializes a 2D array and fills it with 0s.
@@ -130,18 +132,31 @@ function App() {
    * @param tile
    */
   function handleTileClick(tile) {
-    if (tile.variant === "TILE_CREATABLE") {
+    if(tile.variant === "TILE_CREATABLE") {
         generateTile(tile);
     }
+
+    if(tile.variant !== "TILE_CREATABLE") {
+        const tileElementRect = document.getElementById(tile.id).getBoundingClientRect();
+        setTileInfo({
+            title: "Test Title",
+            story: "Test Story",
+            position: { top: tileElementRect.top, left: tileElementRect.left }
+        })
+    }
+
     if(tile.variant === "TILE_HOUSE_1") {
         if(tile.level !== 4) {
-            updateTile(tile, { level: parseInt(tile.level + 1) })
+            // updateTile(tile, { level: parseInt(tile.level + 1) })
         }
     }
+
   }
 
   return (<>
       <DebugChooser value={variant} onChange={(e) => setVariant(e.currentTarget.value)}/>
+
+      {tileInfo && <TileInfo title={tileInfo.title} story={tileInfo.story} position={tileInfo.position}/>}
       {loading && <Loader size={50} color="#26A65B" css={loaderStyle}/>}
       <TileMap onTileClick={handleTileClick} tiles={tiles} isometric/>
   </>);
