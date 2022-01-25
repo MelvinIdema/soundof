@@ -133,7 +133,7 @@ export const H2 = styled.h2`
     margin-bottom: 5px;
 `;
 export const P = styled.p`
-    font-size: 1em;
+    font-size: 1.2em;
     font-family: ${fontFamily};
     font-weight: 500;
 
@@ -299,7 +299,7 @@ export const Carousel = styled.div`
     img {
         background-color: #edfaff;
         width: 200px;
-        padding: 50px 200px;
+        padding: 50px 160px;
     }
 `;
 
@@ -311,4 +311,8 @@ export const GenreWrapper = styled.div`
         width: 36px;
         height: 36px;
     }
+`;
+
+export const EmotionWrapper = styled.div`
+    margin: 10px 0;
 `;

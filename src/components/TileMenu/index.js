@@ -16,6 +16,7 @@ import {
     Triangle,
     Carousel,
     GenreWrapper,
+    EmotionWrapper,
 } from "./style";
 import house1_1 from "./assets/huis1.1.png";
 import house1_2 from "./assets/huis1.2.png";
@@ -325,21 +326,23 @@ export const TileMenu = ({}) => {
                             />
                         </svg>
                     </GenreWrapper>
-                    {currentEmotion === emotions[0] && (
-                        <RadioButton crying type="radio" />
-                    )}
-                    {currentEmotion === emotions[1] && (
-                        <RadioButton sad type="radio" />
-                    )}
-                    {currentEmotion === emotions[2] && (
-                        <RadioButton neutral type="radio" />
-                    )}
-                    {currentEmotion === emotions[3] && (
-                        <RadioButton happy type="radio" />
-                    )}
-                    {currentEmotion === emotions[4] && (
-                        <RadioButton overjoyed type="radio" />
-                    )}
+                    <EmotionWrapper>
+                        {currentEmotion === emotions[0] && (
+                            <RadioButton crying type="radio" disabled />
+                        )}
+                        {currentEmotion === emotions[1] && (
+                            <RadioButton sad type="radio" disabled />
+                        )}
+                        {currentEmotion === emotions[2] && (
+                            <RadioButton neutral type="radio" disabled />
+                        )}
+                        {currentEmotion === emotions[3] && (
+                            <RadioButton happy type="radio" disabled />
+                        )}
+                        {currentEmotion === emotions[4] && (
+                            <RadioButton overjoyed type="radio" disabled />
+                        )}
+                    </EmotionWrapper>
                     <H2> Kies een ontwerp </H2>
                     <Carousel>
                         <Button
