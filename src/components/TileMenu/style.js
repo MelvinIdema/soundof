@@ -136,7 +136,12 @@ export const P = styled.p`
     font-size: 1em;
     font-family: ${fontFamily};
     font-weight: 500;
-    margin: 5px;
+
+    ${(props) =>
+        props.var2 &&
+        css`
+            margin: 5px;
+        `}
 `;
 export const TextArea = styled.textarea`
     font-size: 1em;

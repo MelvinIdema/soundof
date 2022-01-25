@@ -7,21 +7,23 @@ import {
     RadioButton,
     UnorderedList,
     DropDownMenu,
+    DropDownOption,
 } from "./style";
 
 export const FilterMenu = ({}) => {
     const genres = [
-        "Kies het genre van uw liedje",
-        "Country",
-        "Electronisch",
-        "Hip-Hop",
-        "Jazz",
-        "Klassiek",
-        "Latin",
-        "Metal",
-        "Pop",
-        "R&B",
-        "Rock",
+        { name: "Welk genre heeft jouw gekozen lied?", color: "none" },
+        { name: "Alternative", color: "#c43c86" },
+        { name: "Electronisch", color: "#f18382" },
+        { name: "Hip-Hop", color: "#664a84" },
+        { name: "Jazz", color: "#e9bc67" },
+        { name: "K-Pop", color: "#426b87" },
+        { name: "Klassiek", color: "#62b5d5" },
+        { name: "Latin", color: "#fb985d" },
+        { name: "Pop", color: "#069383" },
+        { name: "R&B", color: "#6a1944" },
+        { name: "Rock", color: "#a71522" },
+        { name: "Volksmuziek", color: "#cb5225" },
     ];
     const [currentGenre, setCurrentGenre] = useState(genres[0]);
     const emotions = ["crying", "sad", "neutral", "happy", "overjoyed"];
@@ -45,7 +47,7 @@ export const FilterMenu = ({}) => {
 
     return (
         <FilterMenuWrapper>
-            <h1> Filter </h1>
+            <H1> Filter </H1>
             <UnorderedList>
                 <li>
                     <RadioButton
@@ -87,7 +89,9 @@ export const FilterMenu = ({}) => {
             </UnorderedList>
             <DropDownMenu onChange={(e) => handleGenre(e)}>
                 {genres.map((d) => {
-                    return <option value={d}> {d} </option>;
+                    return (
+                        <DropDownOption value={d.name}>{d.name}</DropDownOption>
+                    );
                 })}
             </DropDownMenu>
             <Button primary> 🔍 </Button>

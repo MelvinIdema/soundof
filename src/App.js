@@ -4,6 +4,7 @@ import Bush from "./bush.png";
 
 import { TileMenu } from "./components/TileMenu/TileMenu";
 import { FilterMenu } from "./components/FilterMenu/FilterMenu";
+import { TilePopup } from "./components/TilePopup/TilePopup";
 
 function App() {
     const gridEl = useRef(null);
@@ -179,7 +180,8 @@ function App() {
     return (
         <>
             <TileMenu />
-            {/* <FilterMenu /> */}
+            <FilterMenu />
+            <TilePopup />
             <div
                 className="map"
                 onMouseDown={handleMouseDown}

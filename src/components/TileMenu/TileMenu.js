@@ -29,16 +29,17 @@ export const TileMenu = ({}) => {
     const [storyList, setStoryList] = useState([]); //
     const genres = [
         { name: "Welk genre heeft jouw gekozen lied?", color: "none" },
-        { name: "Country", color: "red" },
-        { name: "Electronisch", color: "blue" },
-        { name: "Hip-Hop", color: "green" },
-        { name: "Jazz", color: "yellow" },
-        { name: "Klassiek", color: "purple" },
-        { name: "Latin", color: "orange" },
-        { name: "Metal", color: "black" },
-        { name: "Pop", color: "white" },
-        { name: "R&B", color: "pink" },
-        { name: "Rock", color: "grey" },
+        { name: "Alternative", color: "#c43c86" },
+        { name: "Electronisch", color: "#f18382" },
+        { name: "Hip-Hop", color: "#664a84" },
+        { name: "Jazz", color: "#e9bc67" },
+        { name: "K-Pop", color: "#426b87" },
+        { name: "Klassiek", color: "#62b5d5" },
+        { name: "Latin", color: "#fb985d" },
+        { name: "Pop", color: "#069383" },
+        { name: "R&B", color: "#6a1944" },
+        { name: "Rock", color: "#a71522" },
+        { name: "Volksmuziek", color: "#cb5225" },
     ];
     const [currentGenre, setCurrentGenre] = useState(genres[0]);
     const emotions = ["crying", "sad", "neutral", "happy", "overjoyed"];
@@ -238,15 +239,17 @@ export const TileMenu = ({}) => {
             )}
             {IsStepWrapperHidden === true && (
                 <StepWrapper>
-                    <P>{currentTitle}</P>
-                    <P></P>
+                    <P var2>{currentTitle}</P>
+                    <P var2></P>
                     <GenreWrapper>
-                        <P>Genre: {currentGenre}</P>
+                        <P var2>Genre: {currentGenre}</P>
                         <svg>
                             <circle
                                 cx="15"
                                 cy="15"
                                 r="15"
+                                stroke="#fff"
+                                strokeWidth="2"
                                 fill={
                                     genres.find(
                                         (genre) => genre.name === currentGenre
