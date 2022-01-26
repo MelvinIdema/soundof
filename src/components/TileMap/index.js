@@ -7,10 +7,11 @@ export default function TileMap(props) {
       isometric,
       tiles,
       onTileClick,
+      onTileHover,
       theRef,
       onMouseDown,
       onMouseMove,
-      onMouseUp,
+      onMouseUp
   } = props;
 
   return (
@@ -20,7 +21,7 @@ export default function TileMap(props) {
       onMouseMove={onMouseMove}
     >
       <StyledGrid isometric={isometric} ref={theRef}>
-        {tiles.map((row) => row.map((tile) => tile !== 0 && <Tile key={tile.id} onTileClick={() => onTileClick(tile)} tile={tile}/>))}
+        {tiles.map((row) => row.map((tile) => tile !== 0 && <Tile key={tile.id} onTileHover={onTileHover} onTileClick={() => onTileClick(tile)} tile={tile}/>))}
       </StyledGrid>
     </StyledMap>
   )

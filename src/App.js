@@ -4,6 +4,7 @@ import { css } from "styled-components";
 import TileMap from "./components/TileMap";
 import Loader from "react-spinners/PulseLoader";
 import DebugChooser from "./components/DebugChooser";
+import TilePopup from "./components/TilePopup";
 // Helpers
 import generateId from "./helpers/generateId";
 // Database
@@ -31,12 +32,17 @@ function App() {
     const [tileInfo, setTileInfo] = useState(null);
     const [tileInfoPosition, setTileInfoPosition] = useState(null);
 
+    // TilePopup States
+    const [tilePopup, setTilePopup] = useState(null);
+    const [tilePopupPosition, setTilePopupPosition] = useState(null);
+
     // Drag & Drop States
     const [pressed, setPressed] = useState(false);
     const [position, setPosition] = useState({ x: null, y: null });
 
     // User Generated States
     const [variant, setVariant] = useState("TILE_HOUSE_1");
+    const [songTitle, setSongTitle] = useState("Rick Astley - Never Gonna Give You Up")
 
   /**
    * Initializes a 2D array and fills it with 0s.
@@ -136,7 +142,8 @@ function App() {
       row: tile.row,
       column: tile.column,
       tileInfoId: null,
-      views: 1
+      views: 1,
+      song: songTitle
     };
     const tileId = await createTile(newTile);
 
@@ -182,7 +189,6 @@ function App() {
             // updateTile(tile, { level: parseInt(tile.level + 1) })
         }
     }
-
   }
 
     /**
@@ -230,18 +236,35 @@ function App() {
         setTileInfo(null);
     }
 
+    function handleTileHover(event, tile) {
+        if(tile.variant === "TILE_CREATABLE") return;
+
+        if(event === "LEAVE") {
+            setTilePopup(null);
+        }
+
+        if(event === "ENTER") {
+            const tileElementRect = document.getElementById(tile.id).getBoundingClientRect();
+            setTilePopupPosition({ top: tileElementRect.top, left: tileElementRect.left })
+            setTilePopup(tile.song ?? "Geen muziekinformatie");
+        }
+
+    }
+
   return (<>
       <DebugChooser value={variant} onChange={(e) => setVariant(e.currentTarget.value)}/>
       {loading && <Loader size={50} color="#26A65B" css={loaderStyle}/>}
       {tileInfo && <TileInfo loading={tileInfoLoading} onCloseClick={handleCloseClick} theRef={infoEl} title={tileInfo.title} story={tileInfo.story} position={tileInfoPosition}/>}
+      {tilePopup && <TilePopup songTitle={tilePopup} position={tilePopupPosition} />}
       <TileMap
           onMouseDown={handleMouseDown}
           onMouseUp={handleMouseUp}
           onMouseMove={handleMouseMove}
+          onTileClick={handleTileClick}
+          onTileHover={handleTileHover}
           theRef={gridEl}
           pressed={pressed}
           position={position}
-          onTileClick={handleTileClick}
           tiles={tiles}
           isometric/>
   </>);

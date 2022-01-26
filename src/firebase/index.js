@@ -13,13 +13,7 @@ export const getTiles = async () => {
 }
 
 export const createTile = async (tile) => {
-    const theTile = {
-        variant: tile.variant,
-        column: tile.column,
-        row: tile.row,
-        views: tile.views
-    }
-    const createdTile = await addDoc(collection(db, 'tiles'), theTile);
+    const createdTile = await addDoc(collection(db, 'tiles'), tile);
     return createdTile.id;
 }
 
