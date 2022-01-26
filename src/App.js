@@ -62,19 +62,21 @@ function App() {
    */
   const [tiles, setTiles] = useState(new Array(32).fill([]).map(() => new Array(32).fill(0)));
     useEffect(() => {
-        setLoading(true);
-        const unsubscribe = onSnapshot(collection(db, "tiles"), snapshot => {
-            const docs = snapshot.docChanges().map(doc => {
-                const data = doc.doc.data();
-                return {
-                    id: doc.doc.id,
-                    ...data
-                }
-            });
-            docs.forEach(tile => addTile(tile));
-            setLoading(false);
-        })
-        return () => unsubscribe();
+        // setLoading(true);
+
+        // const unsubscribe = onSnapshot(collection(db, "tiles"), snapshot => {
+        //     const docs = snapshot.docChanges().map(doc => {
+        //         const data = doc.doc.data();
+        //         return {
+        //             id: doc.doc.id,
+        //             ...data
+        //         }
+        //     });
+        //     docs.forEach(tile => addTile(tile));
+        //     setLoading(false);
+        // })
+
+        // return () => unsubscribe();
     }, [])
 
   /**
@@ -155,20 +157,29 @@ function App() {
       views: 1,
       song: songTitle
     };
-    const tileId = await createTile(newTile);
+    // const tileId = await createTile(newTile);
 
-    const newTileInfo = {
-        title: `${tileId}`,
-        story: `Information for tile with id ${tileId}`,
-        tileId: tileId
-    }
-    const tileInfoId = await createTileInfo(newTileInfo);
+    // const newTileInfo = {
+    //     title: `${tileId}`,
+    //     story: `Information for tile with id ${tileId}`,
+    //     tileId: tileId
+    // }
+    // const tileInfoId = await createTileInfo(newTileInfo);
 
-    await updateTile(tileId, {
-        tileInfoId: tileInfoId
-    })
-
+    // await updateTile(tileId, {
+    //     tileInfoId: tileInfoId
+    // })
+    addTile(newTile);
   }
+
+  generateTile({
+      variant: variant,
+      row: 15,
+      column: 15,
+      tileInfoId: null,
+      views: 1,
+      song: songTitle
+  })
 
   /**
    * Function to determine what should execute when a tile is clicked. For now
@@ -182,17 +193,17 @@ function App() {
     }
 
     if(tile.variant !== "TILE_CREATABLE") {
-        setTileInfoLoading(true);
+        // setTileInfoLoading(true);
+        //
+        // const tileElementRect = document.getElementById(tile.id).getBoundingClientRect();
+        // setTileInfoPosition({ top: tileElementRect.top, left: tileElementRect.left });
+        //
+        // const tileInfoData = await getTileInfo(tile.tileInfoId);
+        // setTileInfo(tileInfoData);
+        //
+        // setTileInfoLoading(false);
 
-        const tileElementRect = document.getElementById(tile.id).getBoundingClientRect();
-        setTileInfoPosition({ top: tileElementRect.top, left: tileElementRect.left });
-
-        const tileInfoData = await getTileInfo(tile.tileInfoId);
-        setTileInfo(tileInfoData);
-
-        setTileInfoLoading(false);
-
-        updateTile(tile.id, { views: tile.views + 1 })
+        // updateTile(tile.id, { views: tile.views + 1 })
     }
 
     if(tile.variant === "TILE_HOUSE_1") {
