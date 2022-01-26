@@ -5,6 +5,7 @@ import TileMap from "./components/TileMap";
 import Loader from "react-spinners/PulseLoader";
 import DebugChooser from "./components/DebugChooser";
 import TilePopup from "./components/TilePopup";
+import TileMenu from "./components/TileMenu";
 // Helpers
 import generateId from "./helpers/generateId";
 // Database
@@ -35,6 +36,15 @@ function App() {
     // TilePopup States
     const [tilePopup, setTilePopup] = useState(null);
     const [tilePopupPosition, setTilePopupPosition] = useState(null);
+
+    // TileMenu States
+    const [isCreating, setIsCreating] = useState(false);
+    const [currentTitle, setCurrentTitle] = useState(null);
+    const [currentStory, setCurrentStory] = useState(null);
+    const [currentGenre, setCurrentGenre] = useState("");
+    const [currentEmotion, setCurrentEmotion] = useState(null);
+    const [songData, setSongData] = useState(null);
+    const [houseVariant, setHouseVariant] = useState(null);
 
     // Drag & Drop States
     const [pressed, setPressed] = useState(false);
@@ -167,7 +177,8 @@ function App() {
    */
   async function handleTileClick(tile) {
     if(tile.variant === "TILE_CREATABLE") {
-        generateTile(tile);
+        // generateTile(tile);
+        setIsCreating(true);
     }
 
     if(tile.variant !== "TILE_CREATABLE") {
@@ -251,9 +262,60 @@ function App() {
 
     }
 
+    function handleCurrentGenreChange(genre)  {
+        setCurrentGenre(genre);
+    }
+
+    function handleCurrentEmotionChange(emotion) {
+        setCurrentEmotion(emotion);
+    }
+
+    function handleSongDataChange(newSongData) {
+        setSongData(newSongData);
+    }
+
+    function handleCurrentTitleChange(title) {
+        setCurrentTitle(title);
+    }
+
+    function handleCurrentStoryChange(story) {
+        setCurrentStory(story);
+    }
+
+    function handleHouseVariantChange(variant) {
+        setHouseVariant(variant);
+    }
+
+    function handleSubmit() {
+        const data = {
+            title: currentTitle,
+            story: currentStory,
+            genre: currentGenre,
+            emotion: currentEmotion,
+            songData: songData,
+            houseVariant: houseVariant
+        }
+        console.log(data);
+    }
+
   return (<>
       <DebugChooser value={variant} onChange={(e) => setVariant(e.currentTarget.value)}/>
       {loading && <Loader size={50} color="#26A65B" css={loaderStyle}/>}
+      {isCreating && <TileMenu
+          currentTitle={currentTitle}
+          onCurrentTitleChange={handleCurrentTitleChange}
+          currentStory={currentStory}
+          onCurrentStoryChange={handleCurrentStoryChange}
+          currentGenre={currentGenre}
+          onCurrentGenreChange={handleCurrentGenreChange}
+          currentEmotion={currentEmotion}
+          onCurrentEmotionChange={handleCurrentEmotionChange}
+          songData={songData}
+          onSongDataChange={handleSongDataChange}
+          houseVariant={houseVariant}
+          onHouseVariantChange={handleHouseVariantChange}
+          onSubmit={handleSubmit}
+      />}
       {tileInfo && <TileInfo loading={tileInfoLoading} onCloseClick={handleCloseClick} theRef={infoEl} title={tileInfo.title} story={tileInfo.story} position={tileInfoPosition}/>}
       {tilePopup && <TilePopup songTitle={tilePopup} position={tilePopupPosition} />}
       <TileMap
@@ -266,7 +328,8 @@ function App() {
           pressed={pressed}
           position={position}
           tiles={tiles}
-          isometric/>
+          isometric
+      />
   </>);
 }
 
