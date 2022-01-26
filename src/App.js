@@ -10,15 +10,21 @@ import TileMenu from "./components/TileMenu";
 import generateId from "./helpers/generateId";
 // Database
 import db from "./firebase/firebase.config";
-import { createTile, createTileInfo, updateTile, getTileInfo } from "./firebase";
+import {
+    createTile,
+    createTileInfo,
+    updateTile,
+    getTileInfo,
+} from "./firebase";
 import { onSnapshot, collection } from "firebase/firestore";
 import TileInfo from "./components/TileInfo";
 
 const loaderStyle = css`
-  position: absolute;
-  transform: translate(-50%, -50%);
-  top: 50%; left: 50%;
-  z-index: 9999;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+    z-index: 9999;
 `;
 
 function App() {
@@ -52,15 +58,17 @@ function App() {
 
     // User Generated States
     const [variant, setVariant] = useState("");
-    const [songTitle, setSongTitle] = useState("")
+    const [songTitle, setSongTitle] = useState("");
 
-  /**
-   * Initializes a 2D array and fills it with 0s.
-   * For demo Purposes the initial tile is added. In the future we probably want
-   * to take tile data from an external API and populate the 2D array accordingly.
-   * This means that the starting tile will be generated on the server side.
-   */
-  const [tiles, setTiles] = useState(new Array(32).fill([]).map(() => new Array(32).fill(0)));
+    /**
+     * Initializes a 2D array and fills it with 0s.
+     * For demo Purposes the initial tile is added. In the future we probably want
+     * to take tile data from an external API and populate the 2D array accordingly.
+     * This means that the starting tile will be generated on the server side.
+     */
+    const [tiles, setTiles] = useState(
+        new Array(32).fill([]).map(() => new Array(32).fill(0))
+    );
     // useEffect(() => {
     //     // setLoading(true);
     //
@@ -81,139 +89,138 @@ function App() {
 
     useEffect(() => {
         generateTile({
-            variant: "TILE_HOUSE_1",
-            views: 1,
+            variant: "TILE_HOUSE_111",
+            views: 10,
             row: 15,
             column: 15,
             tileInfoId: null,
-            song: "Rick Astley - Never Gonna Give You Up"
-        })
-    }, [])
+            song: "Rick Astley - Never Gonna Give You Up",
+        });
+    }, []);
 
-  /**
-   * This function takes a tile {object} and checks where on the grid a creatable tile
-   * should appear. Perhaps we could implement this on the server side. But we should
-   * consider the possibility to view other islands without create permissions.
-   * @param tile
-   */
-  function renderCreatables(tile) {
-    if (tile.variant === "TILE_CREATABLE") return;
+    /**
+     * This function takes a tile {object} and checks where on the grid a creatable tile
+     * should appear. Perhaps we could implement this on the server side. But we should
+     * consider the possibility to view other islands without create permissions.
+     * @param tile
+     */
+    function renderCreatables(tile) {
+        if (tile.variant === "TILE_CREATABLE") return;
 
-    const defaultCreatable = {
-      id: null,
-      variant: "TILE_CREATABLE",
-      row: tile.row,
-      column: tile.column,
-    };
+        const defaultCreatable = {
+            id: null,
+            variant: "TILE_CREATABLE",
+            row: tile.row,
+            column: tile.column,
+        };
 
-    if (tile.col !== 31 && tiles[tile.row][tile.column + 1] === 0) {
-      addTile({
-        ...defaultCreatable,
-        id: generateId(),
-        column: tile.column + 1,
-      });
+        if (tile.col !== 31 && tiles[tile.row][tile.column + 1] === 0) {
+            addTile({
+                ...defaultCreatable,
+                id: generateId(),
+                column: tile.column + 1,
+            });
+        }
+
+        if (tile.col !== 0 && tiles[tile.row][tile.column - 1] === 0) {
+            addTile({
+                ...defaultCreatable,
+                id: generateId(),
+                column: tile.column - 1,
+            });
+        }
+
+        if (tile.row !== 0 && tiles[tile.row - 1][tile.column] === 0) {
+            addTile({
+                ...defaultCreatable,
+                id: generateId(),
+                row: tile.row - 1,
+            });
+        }
+
+        if (tile.row !== 31 && tiles[tile.row + 1][tile.column] === 0) {
+            addTile({
+                ...defaultCreatable,
+                id: generateId(),
+                row: tile.row + 1,
+            });
+        }
     }
 
-    if (tile.col !== 0 && tiles[tile.row][tile.column - 1] === 0) {
-      addTile({
-        ...defaultCreatable,
-        id: generateId(),
-        column: tile.column - 1,
-      });
+    /**
+     * Adds a tile to the TileMap state.
+     * Calls renderCreatables to determine if there should be
+     * new creatable tiles added to the board.
+     * @param tile
+     */
+    function addTile(tile) {
+        setTiles(() => {
+            const newTiles = [...tiles];
+            newTiles[tile.row][tile.column] = tile;
+            return newTiles;
+        });
+        renderCreatables(tile);
     }
 
-    if (tile.row !== 0 && tiles[tile.row - 1][tile.column] === 0) {
-      addTile({
-        ...defaultCreatable,
-        id: generateId(),
-        row: tile.row - 1,
-      });
+    /**
+     * Creates a creatable tile and calls the addTile function with the creatable tile.
+     * Then it renders the creatables.
+     * @param tile
+     */
+    async function generateTile(tile) {
+        const newTile = {
+            variant: tile.variant,
+            row: tile.row,
+            column: tile.column,
+            tileInfoId: null,
+            views: 1,
+            song: tile.song,
+        };
+        // const tileId = await createTile(newTile);
+
+        // const newTileInfo = {
+        //     title: `${tileId}`,
+        //     story: `Information for tile with id ${tileId}`,
+        //     tileId: tileId
+        // }
+        // const tileInfoId = await createTileInfo(newTileInfo);
+
+        // await updateTile(tileId, {
+        //     tileInfoId: tileInfoId
+        // })
+        addTile(newTile);
     }
 
-    if (tile.row !== 31 && tiles[tile.row + 1][tile.column] === 0) {
-      addTile({
-        ...defaultCreatable,
-        id: generateId(),
-        row: tile.row + 1,
-      });
+    /**
+     * Function to determine what should execute when a tile is clicked. For now
+     * there's only one tile: the creatable.
+     * @param tile
+     */
+    async function handleTileClick(tile) {
+        // if(tile.variant === "TILE_CREATABLE") {
+        //     // generateTile(tile);
+        //     setIsCreating(true);
+        // }
+
+        if (tile.variant !== "TILE_CREATABLE") {
+            // setTileInfoLoading(true);
+            //
+            // const tileElementRect = document.getElementById(tile.id).getBoundingClientRect();
+            // setTileInfoPosition({ top: tileElementRect.top, left: tileElementRect.left });
+            //
+            // const tileInfoData = await getTileInfo(tile.tileInfoId);
+            // setTileInfo(tileInfoData);
+            //
+            // setTileInfoLoading(false);
+            // updateTile(tile.id, { views: tile.views + 1 })
+        }
+
+        // if(tile.variant === "TILE_HOUSE_1") {
+        //     if(tile.level !== 4) {
+        //         // updateTile(tile, { level: parseInt(tile.level + 1) })
+        //     }
+        // }
     }
-  }
-
-  /**
-   * Adds a tile to the TileMap state.
-   * Calls renderCreatables to determine if there should be
-   * new creatable tiles added to the board.
-   * @param tile
-   */
-  function addTile(tile) {
-    setTiles(() => {
-      const newTiles = [...tiles];
-      newTiles[tile.row][tile.column] = tile;
-      return newTiles;
-    });
-    renderCreatables(tile);
-  }
-
-  /**
-   * Creates a creatable tile and calls the addTile function with the creatable tile.
-   * Then it renders the creatables.
-   * @param tile
-   */
-  async function generateTile(tile) {
-    const newTile = {
-      variant: tile.variant,
-      row: tile.row,
-      column: tile.column,
-      tileInfoId: null,
-      views: 1,
-      song: tile.song
-    };
-    // const tileId = await createTile(newTile);
-
-    // const newTileInfo = {
-    //     title: `${tileId}`,
-    //     story: `Information for tile with id ${tileId}`,
-    //     tileId: tileId
-    // }
-    // const tileInfoId = await createTileInfo(newTileInfo);
-
-    // await updateTile(tileId, {
-    //     tileInfoId: tileInfoId
-    // })
-    addTile(newTile);
-  }
-
-  /**
-   * Function to determine what should execute when a tile is clicked. For now
-   * there's only one tile: the creatable.
-   * @param tile
-   */
-  async function handleTileClick(tile) {
-    // if(tile.variant === "TILE_CREATABLE") {
-    //     // generateTile(tile);
-    //     setIsCreating(true);
-    // }
-
-    if(tile.variant !== "TILE_CREATABLE") {
-        // setTileInfoLoading(true);
-        //
-        // const tileElementRect = document.getElementById(tile.id).getBoundingClientRect();
-        // setTileInfoPosition({ top: tileElementRect.top, left: tileElementRect.left });
-        //
-        // const tileInfoData = await getTileInfo(tile.tileInfoId);
-        // setTileInfo(tileInfoData);
-        //
-        // setTileInfoLoading(false);
-
-        // updateTile(tile.id, { views: tile.views + 1 })
-    }
-
-    // if(tile.variant === "TILE_HOUSE_1") {
-    //     if(tile.level !== 4) {
-    //         // updateTile(tile, { level: parseInt(tile.level + 1) })
-    //     }
-    // }
-  }
 
     /**
      * When TileMap is loaded into the DOM CSS will have centered the TileMap.
@@ -221,7 +228,10 @@ function App() {
      */
     useEffect(() => {
         if (!gridEl.current) return;
-        setPosition({ x: gridEl.current.offsetLeft, y: gridEl.current.offsetTop });
+        setPosition({
+            x: gridEl.current.offsetLeft,
+            y: gridEl.current.offsetTop,
+        });
     }, [gridEl]);
 
     /**
@@ -235,9 +245,14 @@ function App() {
             gridEl.current.style.top = `${position.y}px`;
         }
 
-        if(tileInfo) {
-            const tileElementRect = document.getElementById(tileInfo.tileId).getBoundingClientRect();
-            setTileInfoPosition({ top: tileElementRect.top, left: tileElementRect.left })
+        if (tileInfo) {
+            const tileElementRect = document
+                .getElementById(tileInfo.tileId)
+                .getBoundingClientRect();
+            setTileInfoPosition({
+                top: tileElementRect.top,
+                left: tileElementRect.left,
+            });
         }
     }, [position]);
 
@@ -261,34 +276,40 @@ function App() {
     }
 
     function handleTileHover(event, tile) {
-        if(tile.variant === "TILE_CREATABLE") return;
+        if (tile.variant === "TILE_CREATABLE") return;
 
-        if(event === "LEAVE") {
+        if (event === "LEAVE") {
             setTilePopup(null);
         }
 
-        if(event === "ENTER") {
-            const tileElementRect = document.getElementById(tile.id).getBoundingClientRect();
-            setTilePopupPosition({ top: tileElementRect.top, left: tileElementRect.left })
+        if (event === "ENTER") {
+            const tileElementRect = document
+                .getElementById(tile.id)
+                .getBoundingClientRect();
+            setTilePopupPosition({
+                top: tileElementRect.top,
+                left: tileElementRect.left,
+            });
             setTilePopup(tile.song ?? "Geen muziekinformatie");
         }
-
     }
 
-  return (<>
-      <TileMap
-          onMouseDown={handleMouseDown}
-          onMouseUp={handleMouseUp}
-          onMouseMove={handleMouseMove}
-          onTileClick={handleTileClick}
-          onTileHover={handleTileHover}
-          theRef={gridEl}
-          pressed={pressed}
-          position={position}
-          tiles={tiles}
-          isometric
-      />
-  </>);
+    return (
+        <>
+            <TileMap
+                onMouseDown={handleMouseDown}
+                onMouseUp={handleMouseUp}
+                onMouseMove={handleMouseMove}
+                onTileClick={handleTileClick}
+                onTileHover={handleTileHover}
+                theRef={gridEl}
+                pressed={pressed}
+                position={position}
+                tiles={tiles}
+                isometric
+            />
+        </>
+    );
 }
 
 export default App;
