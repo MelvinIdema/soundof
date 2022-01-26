@@ -7,6 +7,7 @@ import House11 from "./assets/house_1/huis1.1.png";
 import House12 from "./assets/house_1/huis1.2.png";
 import House13 from "./assets/house_1/huis1.3.png";
 import House14 from "./assets/house_1/huis1.4.png";
+// house_2
 
 export const StyledTile = styled.div(({ variant, views }) => css`
   position: relative;
@@ -78,6 +79,21 @@ export const StyledTile = styled.div(({ variant, views }) => css`
     }
 
     ${variant === "TILE_HOUSE_1" && views >= 30 &&
+    css`
+          &:after {
+            background-image: url(${House14});
+            width: 164px;
+            height: 326px;
+            top: 2px;
+            left: 2px;
+          }
+        `
+    }
+
+    /**
+      * TILE_HOUSE_2 
+     */
+    ${variant === "TILE_HOUSE_2" &&
     css`
           &:after {
             background-image: url(${House14});

@@ -13,6 +13,7 @@ export default function Tile(props) {
       onClick={onTileClick}
       onMouseEnter={() => onTileHover("ENTER", tile)}
       onMouseLeave={() => onTileHover("LEAVE", tile)}
+
       variant={tile.variant}
       views={tile.views}
     />

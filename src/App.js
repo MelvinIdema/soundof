@@ -51,8 +51,8 @@ function App() {
     const [position, setPosition] = useState({ x: null, y: null });
 
     // User Generated States
-    const [variant, setVariant] = useState("TILE_HOUSE_1");
-    const [songTitle, setSongTitle] = useState("Rick Astley - Never Gonna Give You Up")
+    const [variant, setVariant] = useState("");
+    const [songTitle, setSongTitle] = useState("")
 
   /**
    * Initializes a 2D array and fills it with 0s.
@@ -61,22 +61,33 @@ function App() {
    * This means that the starting tile will be generated on the server side.
    */
   const [tiles, setTiles] = useState(new Array(32).fill([]).map(() => new Array(32).fill(0)));
+    // useEffect(() => {
+    //     // setLoading(true);
+    //
+    //     // const unsubscribe = onSnapshot(collection(db, "tiles"), snapshot => {
+    //     //     const docs = snapshot.docChanges().map(doc => {
+    //     //         const data = doc.doc.data();
+    //     //         return {
+    //     //             id: doc.doc.id,
+    //     //             ...data
+    //     //         }
+    //     //     });
+    //     //     docs.forEach(tile => addTile(tile));
+    //     //     setLoading(false);
+    //     // })
+    //
+    //     // return () => unsubscribe();
+    // }, [])
+
     useEffect(() => {
-        // setLoading(true);
-
-        // const unsubscribe = onSnapshot(collection(db, "tiles"), snapshot => {
-        //     const docs = snapshot.docChanges().map(doc => {
-        //         const data = doc.doc.data();
-        //         return {
-        //             id: doc.doc.id,
-        //             ...data
-        //         }
-        //     });
-        //     docs.forEach(tile => addTile(tile));
-        //     setLoading(false);
-        // })
-
-        // return () => unsubscribe();
+        generateTile({
+            variant: "TILE_HOUSE_1",
+            views: 1,
+            row: 15,
+            column: 15,
+            tileInfoId: null,
+            song: "Rick Astley - Never Gonna Give You Up"
+        })
     }, [])
 
   /**
@@ -150,12 +161,12 @@ function App() {
    */
   async function generateTile(tile) {
     const newTile = {
-      variant: variant,
+      variant: tile.variant,
       row: tile.row,
       column: tile.column,
       tileInfoId: null,
       views: 1,
-      song: songTitle
+      song: tile.song
     };
     // const tileId = await createTile(newTile);
 
@@ -172,25 +183,16 @@ function App() {
     addTile(newTile);
   }
 
-  generateTile({
-      variant: variant,
-      row: 15,
-      column: 15,
-      tileInfoId: null,
-      views: 1,
-      song: songTitle
-  })
-
   /**
    * Function to determine what should execute when a tile is clicked. For now
    * there's only one tile: the creatable.
    * @param tile
    */
   async function handleTileClick(tile) {
-    if(tile.variant === "TILE_CREATABLE") {
-        // generateTile(tile);
-        setIsCreating(true);
-    }
+    // if(tile.variant === "TILE_CREATABLE") {
+    //     // generateTile(tile);
+    //     setIsCreating(true);
+    // }
 
     if(tile.variant !== "TILE_CREATABLE") {
         // setTileInfoLoading(true);
@@ -206,11 +208,11 @@ function App() {
         // updateTile(tile.id, { views: tile.views + 1 })
     }
 
-    if(tile.variant === "TILE_HOUSE_1") {
-        if(tile.level !== 4) {
-            // updateTile(tile, { level: parseInt(tile.level + 1) })
-        }
-    }
+    // if(tile.variant === "TILE_HOUSE_1") {
+    //     if(tile.level !== 4) {
+    //         // updateTile(tile, { level: parseInt(tile.level + 1) })
+    //     }
+    // }
   }
 
     /**
@@ -273,62 +275,7 @@ function App() {
 
     }
 
-    function handleCurrentGenreChange(genre)  {
-        setCurrentGenre(genre);
-    }
-
-    function handleCurrentEmotionChange(emotion) {
-        setCurrentEmotion(emotion);
-    }
-
-    function handleSongDataChange(newSongData) {
-        setSongData(newSongData);
-    }
-
-    function handleCurrentTitleChange(title) {
-        setCurrentTitle(title);
-    }
-
-    function handleCurrentStoryChange(story) {
-        setCurrentStory(story);
-    }
-
-    function handleHouseVariantChange(variant) {
-        setHouseVariant(variant);
-    }
-
-    function handleSubmit() {
-        const data = {
-            title: currentTitle,
-            story: currentStory,
-            genre: currentGenre,
-            emotion: currentEmotion,
-            songData: songData,
-            houseVariant: houseVariant
-        }
-        console.log(data);
-    }
-
   return (<>
-      <DebugChooser value={variant} onChange={(e) => setVariant(e.currentTarget.value)}/>
-      {loading && <Loader size={50} color="#26A65B" css={loaderStyle}/>}
-      {isCreating && <TileMenu
-          currentTitle={currentTitle}
-          onCurrentTitleChange={handleCurrentTitleChange}
-          currentStory={currentStory}
-          onCurrentStoryChange={handleCurrentStoryChange}
-          currentGenre={currentGenre}
-          onCurrentGenreChange={handleCurrentGenreChange}
-          currentEmotion={currentEmotion}
-          onCurrentEmotionChange={handleCurrentEmotionChange}
-          songData={songData}
-          onSongDataChange={handleSongDataChange}
-          houseVariant={houseVariant}
-          onHouseVariantChange={handleHouseVariantChange}
-          onSubmit={handleSubmit}
-      />}
-      {tileInfo && <TileInfo loading={tileInfoLoading} onCloseClick={handleCloseClick} theRef={infoEl} title={tileInfo.title} story={tileInfo.story} position={tileInfoPosition}/>}
-      {tilePopup && <TilePopup songTitle={tilePopup} position={tilePopupPosition} />}
       <TileMap
           onMouseDown={handleMouseDown}
           onMouseUp={handleMouseUp}
