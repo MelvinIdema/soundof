@@ -29,11 +29,10 @@ export const FilterMenuWrapper = styled.section `
     color: ${fontColor1};
     margin: 10px 10px;
     z-index: 1;
-    width: 600px;
+    width: 400px;
     left: 0;
 `;
 export const Button = styled.button `
-    font-size: 1.4em;
     border: 3px solid transparent;
     text-align: center;
     font-family: ${fontFamily};
@@ -42,7 +41,8 @@ export const Button = styled.button `
     ${(props) =>
         props.primary &&
         css`
-            width: 522px;
+            font-size: 1.4em;
+            width: 400px;
             border-radius: 20px;
             padding: 15px 20px;
             margin: 10px auto;
@@ -54,52 +54,17 @@ export const Button = styled.button `
                 border: 3px solid ${primaryButtonColor};
             }
         `}
-
-    ${(props) =>
-        props.secondary &&
-        css`
-            width: 522px;
-            border-radius: 20px;
-            padding: 15px 20px;
-            margin: 10px auto;
-            background-color: ${secondaryButtonColor};
-            color: ${fontColor1};
-            &:hover {
-                background-color: ${buttonHoverBackgroundColor};
-                color: ${secondaryButtonColor};
-                border: 3px solid ${secondaryButtonColor};
-            }
-        `}
-    ${(props) =>
-        props.search &&
-        css`
-            font-size: 1em;
-            height: 30px;
-            margin: 10px auto 0;
-            background-color: ${youtubeButtonColor};
-            color: ${fontColor1};
-            &:hover {
-                background-color: ${buttonHoverBackgroundColor};
-                color: ${youtubeButtonColor};
-                border: 3px solid ${youtubeButtonColor};
-            }
-        `}
 `;
 
 export const H1 = styled.h1`
     font-size: 2.4em;
     font-family: ${fontFamily};
 `;
-export const P = styled.p`
-    font-size: 1em;
+export const H2 = styled.h2`
+    font-size: 1.4em;
     font-family: ${fontFamily};
-    font-weight: 500;
-
-    ${(props) =>
-        props.var2 &&
-        css`
-            margin: 5px;
-        `}
+    font-weight: 700;
+    margin-bottom: 30px;
 `;
 export const TextInput = styled.input`
     border: none;
@@ -132,6 +97,25 @@ export const TextInput = styled.input`
             width: 464px;
         `}
 `;
+
+export const CheckBox = styled.div`
+    input {
+    }
+    label {
+        padding: 10px;
+        background-color: black;
+        border: 3px solid transparent;
+        text-align: center;
+        font-family: ${fontFamily};
+        font-weight: bold;
+        font-size: 1.2em;
+        color: ${fontColor1};
+        margin-left: 10px;
+        margin-bottom: 10px;
+        border-radius: 20px;
+    }
+`;
+
 export const RadioButton = styled.input`
     -webkit-appearance: none;
     width: 50px;
@@ -177,22 +161,6 @@ export const RadioButton = styled.input`
             background-size: cover;
         `}
 `;
-export const DropDownMenu = styled.select`
-    border: none;
-    font-family: ${fontFamily};
-    font-weight: 500;
-    padding: 5px 10px;
-    /*border-radius: 5px;*/
-    font-size: 1em;
-    width: 500px;
-    background-color: ${inputBackgroundColor};
-    margin-top: 10px;
-    margin-bottom: 15px;
-    color: ${fontColor2};
-    width: 520px;
-`;
-
-export const DropDownOption = styled.option``;
 
 export const UnorderedList = styled.ul`
     margin-top: -10px;
@@ -200,6 +168,13 @@ export const UnorderedList = styled.ul`
     list-style-type: none;
     display: flex;
     justify-content: center;
+    align-items: self;
+
+    ${(props) =>
+        props.genres &&
+        css`
+            display: block;
+        `}
 `;
 
 export const Triangle = styled.div`

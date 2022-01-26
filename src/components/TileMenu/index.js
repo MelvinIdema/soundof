@@ -46,7 +46,7 @@ export const TileMenu = ({}) => {
     const [currentGenre, setCurrentGenre] = useState(genres[0].name);
     const emotions = ["crying", "sad", "neutral", "happy", "overjoyed"];
     const [currentEmotion, setCurrentEmotion] = useState("");
-    const [songData, setSongData] = useState();
+    const [songData, setSongData] = useState(null);
 
     //Styling use states
     const [menuTitle, setMenuTitle] = useState("Creëer je huisje");
@@ -121,7 +121,8 @@ export const TileMenu = ({}) => {
         if (
             currentStory !== "" &&
             currentGenre !== genres[0].name &&
-            currentEmotion !== ""
+            currentEmotion !== "" &&
+            songData !== null
         ) {
             setMenuTitle("Overzicht");
             hideStepWrapper(true);

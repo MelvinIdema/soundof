@@ -8,11 +8,12 @@ import {
     UnorderedList,
     DropDownMenu,
     DropDownOption,
+    H2,
+    CheckBox,
 } from "./style";
 
 export const FilterMenu = ({}) => {
     const genres = [
-        { name: "Welk genre heeft jouw gekozen lied?", color: "none" },
         { name: "Alternative", color: "#c43c86" },
         { name: "Electronisch", color: "#f18382" },
         { name: "Hip-Hop", color: "#664a84" },
@@ -25,7 +26,10 @@ export const FilterMenu = ({}) => {
         { name: "Rock", color: "#a71522" },
         { name: "Volksmuziek", color: "#cb5225" },
     ];
-    const [currentGenre, setCurrentGenre] = useState(genres[0]);
+    const checkedGenres = [];
+
+    const [currentGenres, setCurrentGenres] = useState([]);
+
     const emotions = ["crying", "sad", "neutral", "happy", "overjoyed"];
     const [currentEmotion, setCurrentEmotion] = useState(emotions[2]);
 
@@ -38,16 +42,51 @@ export const FilterMenu = ({}) => {
     };
 
     /**
-     * Sets currentGenre based on selected option in select
+     * Adds or removes genre to checkedGenres array based on if checkbox is checked or unchecked
      * @param {*} e
      */
     const handleGenre = (e) => {
-        setCurrentGenre(e.target.value);
+        if (checkedGenres.includes(e)) {
+            let index = checkedGenres.indexOf(e);
+            if (index !== -1) {
+                checkedGenres.splice(index, 1);
+            }
+        } else {
+            checkedGenres.push(e);
+        }
+        console.log(checkedGenres);
+    };
+
+    const applyFilter = () => {
+        setCurrentGenres(checkedGenres);
     };
 
     return (
         <FilterMenuWrapper>
-            <H1> Filter </H1>
+            <H2>Genres</H2>
+            <UnorderedList genres>
+                {genres.map((d) => {
+                    return (
+                        <CheckBox>
+                            <input
+                                type="checkbox"
+                                id={d.name}
+                                value={d.name}
+                                class="regular-checkbox big-checkbox"
+                                onChange={(e) => handleGenre(e.target.value)}
+                            />
+                            <label
+                                for={d.name}
+                                style={{ backgroundColor: d.color }}
+                            >
+                                {d.name}
+                            </label>
+                        </CheckBox>
+                    );
+                })}
+            </UnorderedList>
+
+            <H2>Emoties</H2>
             <UnorderedList>
                 <li>
                     <RadioButton
@@ -87,14 +126,11 @@ export const FilterMenu = ({}) => {
                     />
                 </li>
             </UnorderedList>
-            <DropDownMenu onChange={(e) => handleGenre(e)}>
-                {genres.map((d) => {
-                    return (
-                        <DropDownOption value={d.name}>{d.name}</DropDownOption>
-                    );
-                })}
-            </DropDownMenu>
-            <Button primary> 🔍 </Button>
+
+            <Button primary onClick={applyFilter}>
+                {" "}
+                🔍{" "}
+            </Button>
         </FilterMenuWrapper>
     );
 };
