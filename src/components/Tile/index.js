@@ -2,7 +2,7 @@ import React from "react";
 import { StyledTile } from "./style";
 
 export default function Tile(props) {
-  const { tile, onTileClick } = props;
+  const { tile, onTileClick, onTileHover } = props;
   return (
     <StyledTile
       id={tile.id}
@@ -11,7 +11,10 @@ export default function Tile(props) {
         gridRow: tile.row + 1,
       }}
       onClick={onTileClick}
+      onMouseEnter={() => onTileHover("ENTER", tile)}
+      onMouseLeave={() => onTileHover("LEAVE", tile)}
       variant={tile.variant}
+      views={tile.views}
     />
   )
 }
