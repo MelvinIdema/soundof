@@ -163,7 +163,7 @@ export default ({
     };
 
     useEffect(() => {
-        switch(houseVariant) {
+        switch(houseIndex) {
             case 0:
                 onHouseVariantChange("TILE_HOUSE_1");
                 break;
@@ -216,6 +216,7 @@ export default ({
                             maxlength="140"
                             minlength="0"
                             placeholder="Vul hier jouw naam in (optioneel)"
+                            value={currentTitle}
                             onChange={(event) => {
                                 onCurrentTitleChange(event.target.value);
                             }}
@@ -237,6 +238,7 @@ export default ({
                         maxlength="280"
                         minlength="3"
                         placeholder="Wat betekent dit lied voor jou?"
+                        value={currentStory}
                         onChange={(event) => {
                             onCurrentStoryChange(event.target.value);
                             setStoryError(false);

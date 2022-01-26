@@ -30,9 +30,7 @@ export const updateTile = async (tileId, update) => {
 
 export const createTileInfo = async (tileInfo) => {
     const theTileInfo = {
-        tileId: tileInfo.tileId,
-        story: tileInfo.story,
-        title: tileInfo.title
+        ...tileInfo
     }
     const createdTileInfo = await addDoc(collection(db, 'tileInfos'), theTileInfo);
     return createdTileInfo.id;

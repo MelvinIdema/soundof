@@ -11,12 +11,16 @@ import House14 from "./assets/house_1/huis1.4.png";
 export const StyledTile = styled.div(({ variant, views }) => css`
   position: relative;
   z-index: 0;
-  background-color: #3c3c3c;
+  transition: all 300ms ease-in-out;
   
   &:hover {
     outline: 6px dashed #D0DFFF;
     outline-offset: -6px;
     cursor: pointer;
+    
+    &:after {
+      opacity: 0.8;
+    }
   }
   
   &:after {
@@ -53,6 +57,7 @@ export const StyledTile = styled.div(({ variant, views }) => css`
         `
     }
 
+    ${variant === "TILE_HOUSE_1"}
     ${variant === "TILE_HOUSE_1" && views >= 10 &&
     css`
           &:after {
