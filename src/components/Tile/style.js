@@ -32,11 +32,13 @@ export const StyledTile = styled.div(
             z-index: 3;
         }
 
-        &:hover {
+        ${variant !== "TILE_PATH" && css`
+          &:hover {
             &:after {
-                opacity: 0.8;
+              opacity: 0.8;
             }
-        }
+          }
+        `} 
 
         ${variant === "TILE_BUSH" &&
         css`
@@ -48,6 +50,18 @@ export const StyledTile = styled.div(
                 left: 45px;
             }
         `}
+
+        ${variant === "TILE_FOUNTAIN" && 
+            css`
+              &:after {
+                background-image: url('fontein.png');
+                width: 164px;
+                height: 220px;
+                top: 38px;
+                left: 36px;
+              }
+            `
+        }
 
         ${variant === "TILE_HOUSE_1" &&
         css`
@@ -255,6 +269,7 @@ export const StyledTile = styled.div(
     
   ${variant === "TILE_PATH" &&
         css`
+            background: #3e3e3e;
             &:after {
                 background-image: url(${Path});
                 width: 164px;
