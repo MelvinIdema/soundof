@@ -5,6 +5,7 @@ import TileMap from "./components/TileMap";
 import Loader from "react-spinners/PulseLoader";
 import TilePopup from "./components/TilePopup";
 import TileMenu from "./components/TileMenu";
+import FilterMenu from "./components/FilterMenu";
 // Helpers
 import generateId from "./helpers/generateId";
 // Database
@@ -71,20 +72,20 @@ function App() {
     useEffect(() => {
         setLoading(true);
 
-        const unsubscribe = onSnapshot(collection(db, "tiles"), snapshot => {
-            const docs = snapshot.docChanges().map(doc => {
+        const unsubscribe = onSnapshot(collection(db, "tiles"), (snapshot) => {
+            const docs = snapshot.docChanges().map((doc) => {
                 const data = doc.doc.data();
                 return {
                     id: doc.doc.id,
-                    ...data
-                }
+                    ...data,
+                };
             });
-            docs.forEach(tile => addTile(tile));
+            docs.forEach((tile) => addTile(tile));
             setLoading(false);
-        })
+        });
 
         return () => unsubscribe();
-    }, [])
+    }, []);
 
     /**
      * This function takes a tile {object} and checks where on the grid a creatable tile
@@ -135,85 +136,92 @@ function App() {
         }
     }
 
-  /**
-   * Adds a tile to the TileMap state.
-   * Calls renderCreatables to determine if there should be
-   * new creatable tiles added to the board.
-   * @param tile
-   */
-  function addTile(tile) {
-    setTiles(() => {
-      const newTiles = [...tiles];
-      newTiles[tile.row][tile.column] = tile;
-      return newTiles;
-    });
-    renderCreatables(tile);
-  }
-
-  /**
-   * Creates a creatable tile and calls the addTile function with the creatable tile.
-   * Then it renders the creatables.
-   * @param tile
-   * @param info
-   */
-  async function generateTile(tile, info) {
-      const newTile = {
-          variant: houseVariant,
-          row: tile.row,
-          column: tile.column,
-          tileInfoId: null,
-          views: 1,
-          song: info.songData.title
-      };
-      const tileId = await createTile(newTile);
-
-      const newTileInfo = {
-          tileId: tileId,
-          ...info
-      }
-      const tileInfoId = await createTileInfo(newTileInfo);
-
-      await updateTile(tileId, { tileInfoId: tileInfoId, emotion: info.emotion, genre: info.genre })
-  }
-  /**
-   * Function to determine what should execute when a tile is clicked. For now
-   * there's only one tile: the creatable.
-   * @param tile
-   */
-  async function handleTileClick(tile) {
-    if(tile.variant === "TILE_CREATABLE") {
-        setSelectedTile(tile);
-        setIsCreating(true);
+    /**
+     * Adds a tile to the TileMap state.
+     * Calls renderCreatables to determine if there should be
+     * new creatable tiles added to the board.
+     * @param tile
+     */
+    function addTile(tile) {
+        setTiles(() => {
+            const newTiles = [...tiles];
+            newTiles[tile.row][tile.column] = tile;
+            return newTiles;
+        });
+        renderCreatables(tile);
     }
 
-    if(tile.variant !== "TILE_CREATABLE") {
-        setSelectedTile(tile);
-        setTileInfoLoading(true);
+    /**
+     * Creates a creatable tile and calls the addTile function with the creatable tile.
+     * Then it renders the creatables.
+     * @param tile
+     * @param info
+     */
+    async function generateTile(tile, info) {
+        const newTile = {
+            variant: houseVariant,
+            row: tile.row,
+            column: tile.column,
+            tileInfoId: null,
+            views: 1,
+            song: info.songData.title,
+        };
+        const tileId = await createTile(newTile);
 
-        if (tile.variant !== "TILE_CREATABLE") {
-            setTileInfoLoading(true);
+        const newTileInfo = {
+            tileId: tileId,
+            ...info,
+        };
+        const tileInfoId = await createTileInfo(newTileInfo);
 
-            const tileElementRect = document.getElementById(tile.id).getBoundingClientRect();
-            setTileInfoPosition({ top: tileElementRect.top, left: tileElementRect.left });
-
-            const tileInfoData = await getTileInfo(tile.tileInfoId);
-            setTileInfo(tileInfoData);
-
-            setTileInfoLoading(false);
-            updateTile(tile.id, { views: tile.views + 1 })
+        await updateTile(tileId, {
+            tileInfoId: tileInfoId,
+            emotion: info.emotion,
+            genre: info.genre,
+        });
+    }
+    /**
+     * Function to determine what should execute when a tile is clicked. For now
+     * there's only one tile: the creatable.
+     * @param tile
+     */
+    async function handleTileClick(tile) {
+        if (tile.variant === "TILE_CREATABLE") {
+            setSelectedTile(tile);
+            setIsCreating(true);
         }
 
+        if (tile.variant !== "TILE_CREATABLE") {
+            setSelectedTile(tile);
+            setTileInfoLoading(true);
+
+            if (tile.variant !== "TILE_CREATABLE") {
+                setTileInfoLoading(true);
+
+                const tileElementRect = document
+                    .getElementById(tile.id)
+                    .getBoundingClientRect();
+                setTileInfoPosition({
+                    top: tileElementRect.top,
+                    left: tileElementRect.left,
+                });
+
+                const tileInfoData = await getTileInfo(tile.tileInfoId);
+                setTileInfo(tileInfoData);
+
+                setTileInfoLoading(false);
+                updateTile(tile.id, { views: tile.views + 1 });
+            }
+        }
     }
 
-  }
-
-  useEffect(() => {
-      if(selectedTile.id) {
-          const theTile = document.getElementById(selectedTile.id);
-          theTile.style.top = `-15px`;
-          theTile.style.left = `-15px`;
-      }
-  }, [selectedTile])
+    useEffect(() => {
+        if (selectedTile.id) {
+            const theTile = document.getElementById(selectedTile.id);
+            theTile.style.top = `-15px`;
+            theTile.style.left = `-15px`;
+        }
+    }, [selectedTile]);
 
     /**
      * When TileMap is loaded into the DOM CSS will have centered the TileMap.
@@ -253,7 +261,10 @@ function App() {
      * Event Handlers. As soon as the user pressed up or down the Pressed state will toggle.
      * If the Pressed state is true and the mouse moves; the Position state will be updated.
      */
-    const handleMouseDown = () => { setPressed(true); setIsCreating(false) }
+    const handleMouseDown = () => {
+        setPressed(true);
+        setIsCreating(false);
+    };
     const handleMouseUp = () => setPressed(false);
     const handleMouseMove = (event) => {
         if (pressed) {
@@ -265,7 +276,7 @@ function App() {
     };
 
     function handleCloseClick() {
-        if(selectedTile.id) {
+        if (selectedTile.id) {
             const theTile = document.getElementById(selectedTile.id);
             console.log(theTile);
             theTile.style.top = `0px`;
@@ -293,7 +304,7 @@ function App() {
         }
     }
 
-    function handleCurrentGenreChange(genre)  {
+    function handleCurrentGenreChange(genre) {
         setCurrentGenre(genre);
     }
 
@@ -324,56 +335,79 @@ function App() {
             genre: currentGenre,
             emotion: currentEmotion,
             songData: songData,
-            houseVariant: houseVariant
-        }
+            houseVariant: houseVariant,
+        };
 
-        generateTile({
-            row: selectedTile.row,
-            column: selectedTile.column,
-            songTitle: data.songData.title
-        },data)
+        generateTile(
+            {
+                row: selectedTile.row,
+                column: selectedTile.column,
+                songTitle: data.songData.title,
+            },
+            data
+        );
         setIsCreating(false);
         setCurrentTitle("");
-        setCurrentStory("")
-        setCurrentGenre("")
+        setCurrentStory("");
+        setCurrentGenre("");
         setCurrentEmotion("");
         setSongData(null);
         setHouseVariant("");
         setSelectedTile(null);
     }
 
-  return (<>
-      {loading && <Loader size={50} color="#26A65B" css={loaderStyle}/>}
-      {isCreating && <TileMenu
-          currentTitle={currentTitle}
-          onCurrentTitleChange={handleCurrentTitleChange}
-          currentStory={currentStory}
-          onCurrentStoryChange={handleCurrentStoryChange}
-          currentGenre={currentGenre}
-          onCurrentGenreChange={handleCurrentGenreChange}
-          currentEmotion={currentEmotion}
-          onCurrentEmotionChange={handleCurrentEmotionChange}
-          songData={songData}
-          onSongDataChange={handleSongDataChange}
-          houseVariant={houseVariant}
-          onHouseVariantChange={handleHouseVariantChange}
-          onSubmit={handleSubmit}
-      />}
-      {tileInfo && <TileInfo loading={tileInfoLoading} onCloseClick={handleCloseClick} theRef={infoEl} title={tileInfo.title} story={tileInfo.story} songData={tileInfo.songData} genre={tileInfo.genre} views={selectedTile.views} emotion={tileInfo.emotion} position={tileInfoPosition}/>}
-      {tilePopup && <TilePopup songTitle={tilePopup} position={tilePopupPosition} />}
-      <TileMap
-          onMouseDown={handleMouseDown}
-          onMouseUp={handleMouseUp}
-          onMouseMove={handleMouseMove}
-          onTileClick={handleTileClick}
-          onTileHover={handleTileHover}
-          theRef={gridEl}
-          pressed={pressed}
-          position={position}
-          tiles={tiles}
-          isometric
-      />
-  </>);
+    return (
+        <>
+            <FilterMenu />
+            {loading && <Loader size={50} color="#26A65B" css={loaderStyle} />}
+            {isCreating && (
+                <TileMenu
+                    currentTitle={currentTitle}
+                    onCurrentTitleChange={handleCurrentTitleChange}
+                    currentStory={currentStory}
+                    onCurrentStoryChange={handleCurrentStoryChange}
+                    currentGenre={currentGenre}
+                    onCurrentGenreChange={handleCurrentGenreChange}
+                    currentEmotion={currentEmotion}
+                    onCurrentEmotionChange={handleCurrentEmotionChange}
+                    songData={songData}
+                    onSongDataChange={handleSongDataChange}
+                    houseVariant={houseVariant}
+                    onHouseVariantChange={handleHouseVariantChange}
+                    onSubmit={handleSubmit}
+                />
+            )}
+            {tileInfo && (
+                <TileInfo
+                    loading={tileInfoLoading}
+                    onCloseClick={handleCloseClick}
+                    theRef={infoEl}
+                    title={tileInfo.title}
+                    story={tileInfo.story}
+                    songData={tileInfo.songData}
+                    genre={tileInfo.genre}
+                    views={selectedTile.views}
+                    emotion={tileInfo.emotion}
+                    position={tileInfoPosition}
+                />
+            )}
+            {tilePopup && (
+                <TilePopup songTitle={tilePopup} position={tilePopupPosition} />
+            )}
+            <TileMap
+                onMouseDown={handleMouseDown}
+                onMouseUp={handleMouseUp}
+                onMouseMove={handleMouseMove}
+                onTileClick={handleTileClick}
+                onTileHover={handleTileHover}
+                theRef={gridEl}
+                pressed={pressed}
+                position={position}
+                tiles={tiles}
+                isometric
+            />
+        </>
+    );
 }
 
 export default App;
