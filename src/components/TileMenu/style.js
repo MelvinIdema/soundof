@@ -190,14 +190,13 @@ export const TextInput = styled.input`
         props.normal &&
         css`
             margin-bottom: 5px;
-          
             margin-top: -1px;
         `}
     ${(props) =>
         props.search &&
         css`
             margin-bottom: 10px;
-            width: calc(100% - 28px);
+            width: calc(100% - 48px);
         `}
 `;
 export const RadioButton = styled.input`
