@@ -17,6 +17,7 @@ import {
     Carousel,
     GenreWrapper,
     EmotionWrapper,
+    Grid
 } from "./style";
 import house1_1 from "./assets/huis1.1.png";
 import house1_2 from "./assets/huis1.2.png";
@@ -210,29 +211,31 @@ export default ({
             <H1> {menuTitle} </H1>
             {IsStepWrapperHidden === false && (
                 <StepWrapper>
-                    {isAnonymous === false && (
-                        <TextInput
-                            normal
-                            type="text"
-                            maxlength="140"
-                            minlength="0"
-                            placeholder="Vul hier jouw naam in (optioneel)"
-                            value={currentTitle}
-                            onChange={(event) => {
-                                onCurrentTitleChange(event.target.value);
-                            }}
-                        />
-                    )}
+                    <Grid col={2}>
+                        {isAnonymous === false && (
+                            <TextInput
+                                normal
+                                type="text"
+                                maxlength="140"
+                                minlength="0"
+                                placeholder="Vul hier jouw naam in (optioneel)"
+                                value={currentTitle}
+                                onChange={(event) => {
+                                    onCurrentTitleChange(event.target.value);
+                                }}
+                            />
+                        )}
+                        <DropDownMenu
+                            onChange={(e) => handleGenre(e)}
+                            value={currentGenre}
+                            style={isGenreError === true ? errorStyleInput : null}
+                        >
+                            {genres.map((d) => {
+                                return <DropDownOption value={ d.name } key={d.name}>{ d.name }</DropDownOption>;
+                            })}
+                        </DropDownMenu>
+                    </Grid>
                     <YoutubeSearch onMoveData={moveData} />
-                    <DropDownMenu
-                        onChange={(e) => handleGenre(e)}
-                        value={currentGenre}
-                        style={isGenreError === true ? errorStyleInput : null}
-                    >
-                        {genres.map((d) => {
-                            return <DropDownOption value={ d.name } key={d.name}>{ d.name }</DropDownOption>;
-                        })}
-                    </DropDownMenu>
                     <TextArea
                         required
                         type="text"
@@ -364,7 +367,6 @@ export default ({
                     <Button onClick={onSubmit} primary> Plaats je huisje </Button>
                 </StepWrapper>
             )}
-            <Triangle />
         </TileMenuWrapper>
     );
 };

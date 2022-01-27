@@ -7,7 +7,7 @@ const viewsBuilding3 = 20;
 const viewsBuilding4 = 30;
 
 const emotions = ["overjoyed", "happy", "neutral", "sad", "crying"];
-const genres = ["r&b", "alternative", "rock", "volksmuziek", "electronic", "latin", "jazz", "pop", "k-pop", "", "hip-hop"]
+const genres = ["r&b", "alternative", "rock", "volksmuziek", "electronisch", "latin", "jazz", "pop", "k-pop", "klassiek", "hip-hop"]
 
 export const StyledTile = styled.div(
         ({ variant, views, genre, emotion }) => css `
