@@ -9,15 +9,21 @@ import TileMenu from "./components/TileMenu";
 import generateId from "./helpers/generateId";
 // Database
 import db from "./firebase/firebase.config";
-import { createTile, createTileInfo, updateTile, getTileInfo } from "./firebase";
+import {
+    createTile,
+    createTileInfo,
+    updateTile,
+    getTileInfo,
+} from "./firebase";
 import { onSnapshot, collection } from "firebase/firestore";
 import TileInfo from "./components/TileInfo";
 
 const loaderStyle = css`
-  position: absolute;
-  transform: translate(-50%, -50%);
-  top: 50%; left: 50%;
-  z-index: 9999;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+    z-index: 9999;
 `;
 
 function App() {
@@ -51,80 +57,98 @@ function App() {
     const [position, setPosition] = useState({ x: null, y: null });
 
     // User Generated States
-    const [variant, setVariant] = useState("TILE_HOUSE_1");
-    const [songTitle, setSongTitle] = useState("Rick Astley - Never Gonna Give You Up")
+    const [variant, setVariant] = useState("");
+    const [songTitle, setSongTitle] = useState("");
 
-  /**
-   * Initializes a 2D array and fills it with 0s.
-   * For demo Purposes the initial tile is added. In the future we probably want
-   * to take tile data from an external API and populate the 2D array accordingly.
-   * This means that the starting tile will be generated on the server side.
-   */
-  const [tiles, setTiles] = useState(new Array(32).fill([]).map(() => new Array(32).fill(0)));
+    /**
+     * Initializes a 2D array and fills it with 0s.
+     * For demo Purposes the initial tile is added. In the future we probably want
+     * to take tile data from an external API and populate the 2D array accordingly.
+     * This means that the starting tile will be generated on the server side.
+     */
+    const [tiles, setTiles] = useState(
+        new Array(32).fill([]).map(() => new Array(32).fill(0))
+    );
+    // useEffect(() => {
+    //     // setLoading(true);
+    //
+    //     // const unsubscribe = onSnapshot(collection(db, "tiles"), snapshot => {
+    //     //     const docs = snapshot.docChanges().map(doc => {
+    //     //         const data = doc.doc.data();
+    //     //         return {
+    //     //             id: doc.doc.id,
+    //     //             ...data
+    //     //         }
+    //     //     });
+    //     //     docs.forEach(tile => addTile(tile));
+    //     //     setLoading(false);
+    //     // })
+    //
+    //     // return () => unsubscribe();
+    // }, [])
+
+    const emotions = ["overjoyed", "happy", "neutral", "sad", "crying"];
     useEffect(() => {
-        setLoading(true);
-        const unsubscribe = onSnapshot(collection(db, "tiles"), snapshot => {
-            const docs = snapshot.docChanges().map(doc => {
-                const data = doc.doc.data();
-                return {
-                    id: doc.doc.id,
-                    ...data
-                }
+        generateTile({
+            variant: "TILE_HOUSE_1",
+            views: 31,
+            genre: "alternative",
+            emotion: "overjoyed",
+            row: 15,
+            column: 15,
+            tileInfoId: null,
+            song: "Rick Astley - Never Gonna Give You Up",
+        });
+    }, []);
+
+    /**
+     * This function takes a tile {object} and checks where on the grid a creatable tile
+     * should appear. Perhaps we could implement this on the server side. But we should
+     * consider the possibility to view other islands without create permissions.
+     * @param tile
+     */
+    function renderCreatables(tile) {
+        if (tile.variant === "TILE_CREATABLE") return;
+
+        const defaultCreatable = {
+            id: null,
+            variant: "TILE_CREATABLE",
+            row: tile.row,
+            column: tile.column,
+        };
+
+        if (tile.col !== 31 && tiles[tile.row][tile.column + 1] === 0) {
+            addTile({
+                ...defaultCreatable,
+                id: generateId(),
+                column: tile.column + 1,
             });
-            docs.forEach(tile => addTile(tile));
-            setLoading(false);
-        })
-        return () => unsubscribe();
-    }, [])
+        }
 
-  /**
-   * This function takes a tile {object} and checks where on the grid a creatable tile
-   * should appear. Perhaps we could implement this on the server side. But we should
-   * consider the possibility to view other islands without create permissions.
-   * @param tile
-   */
-  function renderCreatables(tile) {
-    if (tile.variant === "TILE_CREATABLE") return;
+        if (tile.col !== 0 && tiles[tile.row][tile.column - 1] === 0) {
+            addTile({
+                ...defaultCreatable,
+                id: generateId(),
+                column: tile.column - 1,
+            });
+        }
 
-    const defaultCreatable = {
-      id: null,
-      variant: "TILE_CREATABLE",
-      row: tile.row,
-      column: tile.column,
-    };
+        if (tile.row !== 0 && tiles[tile.row - 1][tile.column] === 0) {
+            addTile({
+                ...defaultCreatable,
+                id: generateId(),
+                row: tile.row - 1,
+            });
+        }
 
-    if (tile.col !== 31 && tiles[tile.row][tile.column + 1] === 0) {
-      addTile({
-        ...defaultCreatable,
-        id: generateId(),
-        column: tile.column + 1,
-      });
+        if (tile.row !== 31 && tiles[tile.row + 1][tile.column] === 0) {
+            addTile({
+                ...defaultCreatable,
+                id: generateId(),
+                row: tile.row + 1,
+            });
+        }
     }
-
-    if (tile.col !== 0 && tiles[tile.row][tile.column - 1] === 0) {
-      addTile({
-        ...defaultCreatable,
-        id: generateId(),
-        column: tile.column - 1,
-      });
-    }
-
-    if (tile.row !== 0 && tiles[tile.row - 1][tile.column] === 0) {
-      addTile({
-        ...defaultCreatable,
-        id: generateId(),
-        row: tile.row - 1,
-      });
-    }
-
-    if (tile.row !== 31 && tiles[tile.row + 1][tile.column] === 0) {
-      addTile({
-        ...defaultCreatable,
-        id: generateId(),
-        row: tile.row + 1,
-      });
-    }
-  }
 
   /**
    * Adds a tile to the TileMap state.
@@ -161,11 +185,15 @@ function App() {
         tileId: tileId,
         ...info
     }
-    const tileInfoId = await createTileInfo(newTileInfo);
 
     await updateTile(tileId, { tileInfoId: tileInfoId })
 
-  }
+        // const newTileInfo = {
+        //     title: `${tileId}`,
+        //     story: `Information for tile with id ${tileId}`,
+        //     tileId: tileId
+        // }
+        // const tileInfoId = await createTileInfo(newTileInfo);
 
   /**
    * Function to determine what should execute when a tile is clicked. For now
@@ -182,15 +210,24 @@ function App() {
         setSelectedTile(tile);
         setTileInfoLoading(true);
 
-        const tileElementRect = document.getElementById(tile.id).getBoundingClientRect();
-        setTileInfoPosition({ top: tileElementRect.top, left: tileElementRect.left });
+        if (tile.variant !== "TILE_CREATABLE") {
+            // setTileInfoLoading(true);
+            //
+            // const tileElementRect = document.getElementById(tile.id).getBoundingClientRect();
+            // setTileInfoPosition({ top: tileElementRect.top, left: tileElementRect.left });
+            //
+            // const tileInfoData = await getTileInfo(tile.tileInfoId);
+            // setTileInfo(tileInfoData);
+            //
+            // setTileInfoLoading(false);
+            // updateTile(tile.id, { views: tile.views + 1 })
+        }
 
-        const tileInfoData = await getTileInfo(tile.tileInfoId);
-        setTileInfo(tileInfoData);
-
-        setTileInfoLoading(false);
-
-        updateTile(tile.id, { views: tile.views + 1 })
+        // if(tile.variant === "TILE_HOUSE_1") {
+        //     if(tile.level !== 4) {
+        //         // updateTile(tile, { level: parseInt(tile.level + 1) })
+        //     }
+        // }
     }
 
     if(tile.variant === "TILE_HOUSE_1") {
@@ -214,7 +251,10 @@ function App() {
      */
     useEffect(() => {
         if (!gridEl.current) return;
-        setPosition({ x: gridEl.current.offsetLeft, y: gridEl.current.offsetTop });
+        setPosition({
+            x: gridEl.current.offsetLeft,
+            y: gridEl.current.offsetTop,
+        });
     }, [gridEl]);
 
     /**
@@ -228,9 +268,14 @@ function App() {
             gridEl.current.style.top = `${position.y}px`;
         }
 
-        if(tileInfo) {
-            const tileElementRect = document.getElementById(tileInfo.tileId).getBoundingClientRect();
-            setTileInfoPosition({ top: tileElementRect.top, left: tileElementRect.left })
+        if (tileInfo) {
+            const tileElementRect = document
+                .getElementById(tileInfo.tileId)
+                .getBoundingClientRect();
+            setTileInfoPosition({
+                top: tileElementRect.top,
+                left: tileElementRect.left,
+            });
         }
     }, [position]);
 
@@ -260,18 +305,22 @@ function App() {
     }
 
     function handleTileHover(event, tile) {
-        if(tile.variant === "TILE_CREATABLE") return;
+        if (tile.variant === "TILE_CREATABLE") return;
 
-        if(event === "LEAVE") {
+        if (event === "LEAVE") {
             setTilePopup(null);
         }
 
-        if(event === "ENTER") {
-            const tileElementRect = document.getElementById(tile.id).getBoundingClientRect();
-            setTilePopupPosition({ top: tileElementRect.top, left: tileElementRect.left })
+        if (event === "ENTER") {
+            const tileElementRect = document
+                .getElementById(tile.id)
+                .getBoundingClientRect();
+            setTilePopupPosition({
+                top: tileElementRect.top,
+                left: tileElementRect.left,
+            });
             setTilePopup(tile.song ?? "Geen muziekinformatie");
         }
-
     }
 
     function handleCurrentGenreChange(genre)  {

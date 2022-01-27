@@ -55,6 +55,7 @@ export default ({
         { name: "Rock", color: "#a71522" },
         { name: "Volksmuziek", color: "#cb5225" },
     ];
+
     const emotions = ["crying", "sad", "neutral", "happy", "overjoyed"];
 
     //Styling use states
