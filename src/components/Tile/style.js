@@ -1,10 +1,12 @@
 import styled, { css } from "styled-components";
 import Bush from "./assets/bush.png";
 import Path from "./assets/path_01.png";
+import Path2 from "./assets/path_02.png";
+import Path3 from "./assets/path_3.png";
 
-const viewsBuilding2 = 10;
-const viewsBuilding3 = 20;
-const viewsBuilding4 = 30;
+const viewsBuilding2 = 20;
+const viewsBuilding3 = 40;
+const viewsBuilding4 = 60;
 
 const emotions = ["overjoyed", "happy", "neutral", "sad", "crying"];
 const genres = ["r&b", "alternative", "rock", "volksmuziek", "electronisch", "latin", "jazz", "pop", "k-pop", "klassiek", "hip-hop"]
@@ -32,7 +34,7 @@ export const StyledTile = styled.div(
             z-index: 3;
         }
 
-        ${variant !== "TILE_PATH" && css`
+        ${variant !== "TILE_PATH" && variant !== "TILE_PATH2" && variant !== "TILE_PATH3" && css`
           &:hover {
             &:after {
               opacity: 0.8;
@@ -61,6 +63,42 @@ export const StyledTile = styled.div(
                 left: 36px;
               }
             `
+        }
+
+        ${variant === "TILE_PATH" &&
+        css`
+        background: #3e3e3e;
+        &:after {
+            background-image: url(${Path});
+            width: 164px;
+            height: 188px;
+            top: 49px;
+            left: 49px;
+        }`
+        }
+
+        ${variant === "TILE_PATH2" &&
+        css`
+        background: #3e3e3e;
+        &:after {
+            background-image: url(${Path2});
+            width: 164px;
+            height: 188px;
+            top: 49px;
+            left: 49px;
+        }`
+        }
+
+        ${variant === "TILE_PATH3" &&
+        css`
+        background: #3e3e3e;
+        &:after {
+            background-image: url(${Path3});
+            width: 164px;
+            height: 188px;
+            top: 49px;
+            left: 49px;
+        }`
         }
 
         ${variant === "TILE_HOUSE_1" &&
@@ -265,19 +303,7 @@ export const StyledTile = styled.div(
                 }
             `}
         `}
-
-    
-  ${variant === "TILE_PATH" &&
-        css`
-            background: #3e3e3e;
-            &:after {
-                background-image: url(${Path});
-                width: 164px;
-                height: 188px;
-                top: 49px;
-                left: 49px;
-            }
-        `}
+        
 
   ${variant === "TILE_CREATABLE" &&
         css`
