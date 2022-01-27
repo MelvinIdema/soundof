@@ -17,18 +17,19 @@ const buttonHoverBackgroundColor = "#fff";
 
 export const TileMenuWrapper = styled.section `
     position: absolute;
-    top: 0; right: 0;
-    text-align: center;
-    padding: 5px 20px;
-    background-color: #2e515b;
-    font-weight: 500;
-    color: white;
-    z-index: 9999;
+    top: 30px; right: 30px;
+    height: calc(100% - 60px);
+    max-height: 100vh;
     width: 30vw;
     min-width: 500px;
-    height: 100%;
-    max-height: 100vh;
+    border-radius: 15px;
+    padding: 5px 20px;
+    background-color: #A3C7CF;
+    color: black;
+    text-align: center;
+    font-weight: 500;
     overflow-y: scroll;
+    z-index: 9999;
 `;
 
 export const StepWrapper = styled.div `
@@ -58,7 +59,6 @@ export const Button = styled.button `
             &:hover {
                 background-color: ${buttonHoverBackgroundColor};
                 color: ${primaryButtonColor};
-                border: 3px solid ${primaryButtonColor};
             }
         `}
 
@@ -74,7 +74,7 @@ export const Button = styled.button `
             &:hover {
                 background-color: ${buttonHoverBackgroundColor};
                 color: ${secondaryButtonColor};
-                border: 3px solid ${secondaryButtonColor};
+                cursor: pointer;
             }
         `}
     ${(props) =>
@@ -93,14 +93,14 @@ export const Button = styled.button `
     ${(props) =>
         props.arrowLeft &&
         css`
+            position: absolute;
+            transform: translateY(-50%);
             background-color: ${secondaryButtonColor};
             clip-path: polygon(100% 0, 50% 50%, 100% 100%);
-            width: 100px;
-            height: 100px;
-            position: absolute;
-            left: 0;
-            margin-left: 100px;
-            margin-top: 50px;
+            width: 50px;
+            height: 35px;
+            left: 10px;
+            top: 50%;
             &:hover {
                 opacity: 0.5;
             }
@@ -108,14 +108,14 @@ export const Button = styled.button `
     ${(props) =>
         props.arrowRight &&
         css`
+            transform: translateY(-50%);
             background-color: ${secondaryButtonColor};
             clip-path: polygon(0 0, 50% 50%, 0 100%);
-            width: 100px;
-            height: 100px;
+            width: 50px;
+            height: 35px;
             position: absolute;
-            right: 0;
-            margin-right: 100px;
-            margin-top: 50px;
+            right: 10px;
+            top: 50%;
             &:hover {
                 opacity: 0.5;
             }
@@ -136,19 +136,20 @@ export const H2 = styled.h2`
 export const P = styled.p`
     font-size: 1.2em;
     font-family: ${fontFamily};
-    font-weight: 500;
+    font-weight: bold;
 
     ${(props) =>
         props.var2 &&
         css`
-            margin: 5px;
+          margin: 5px;
+          text-align: left;
         `}
 `;
 export const TextArea = styled.textarea`
     box-sizing: border-box;
     font-size: 1em;
-    padding: 5px 10px;
-  
+    padding: 10px 20px;
+    border-radius: 20px;
     height: 100%;
     resize: none;
     border: none;
@@ -169,13 +170,14 @@ export const TextArea = styled.textarea`
 export const TextInput = styled.input`
     box-sizing: border-box;
     border: none;
-    padding: 5px 10px;
-    font-size: 1em;
+    padding: 10px 20px;
+    font-size: 14px;
     font-family: ${fontFamily};
     font-weight: 500;
     width: 100%;
     background-color: ${inputBackgroundColor};
     color: ${fontColor2};
+    border-radius: 100px;
 
     ::selection {
         background: ${secondaryButtonColor};
@@ -188,7 +190,7 @@ export const TextInput = styled.input`
         props.normal &&
         css`
             margin-bottom: 5px;
-            height: 31px;
+          
             margin-top: -1px;
         `}
     ${(props) =>
@@ -288,12 +290,14 @@ export const Iframe = styled.iframe`
 `;
 
 export const Carousel = styled.div`
+    position: relative;
     display: flex;
-    margin-bottom: 20px;
     img {
         background-color: #edfaff;
         width: 200px;
         padding: 50px 160px;
+        border-radius: 20px;
+        margin: 0 auto 20px auto;
     }
 `;
 
@@ -309,6 +313,8 @@ export const GenreWrapper = styled.div`
 
 export const EmotionWrapper = styled.div`
     margin: 10px 0;
+    text-align: left;
+    font-weight: bold;
 `;
 
 export const Grid = styled.div`

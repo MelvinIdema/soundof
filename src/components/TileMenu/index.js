@@ -13,16 +13,15 @@ import {
     UnorderedList,
     DropDownMenu,
     DropDownOption,
-    Triangle,
     Carousel,
     GenreWrapper,
     EmotionWrapper,
     Grid
 } from "./style";
-import house1_1 from "./assets/huis1.1.png";
-import house1_2 from "./assets/huis1.2.png";
-import house1_3 from "./assets/huis1.3.png";
-import house1_4 from "./assets/huis1.4.png";
+import house1 from "./assets/huis1.1.png";
+import house2 from "./assets/TILE_HOUSE_2.png";
+import house3 from "./assets/TILE_HOUSE_31.png";
+import house4 from "./assets/TILE_HOUSE_4.png";
 
 export default ({
     currentTitle,
@@ -65,7 +64,7 @@ export default ({
     const [isAnonymous, setAnonymous] = useState(false);
 
     //House use states
-    const houses = [house1_1];
+    const houses = [house1, house2, house3, house4];
     const [houseIndex, setHouseIndex] = useState(0);
 
     //Error use states
@@ -170,10 +169,13 @@ export default ({
                 onHouseVariantChange("TILE_HOUSE_1");
                 break;
             case 1:
-                onHouseVariantChange("TILE_BUSH");
+                onHouseVariantChange("TILE_HOUSE_2");
                 break;
             case 2:
-                onHouseVariantChange("TILE_PATH");
+                onHouseVariantChange("TILE_HOUSE_3");
+                break
+            case 3:
+                onHouseVariantChange("TILE_HOUSE_4");
                 break;
         }
     }, [houseIndex])
@@ -322,6 +324,7 @@ export default ({
             {IsStepWrapperHidden === true && (
                 <StepWrapper>
                     <P var2> {currentTitle} </P> <P var2> </P>
+                    <P var2> {songData.title} </P> <br/>
                     <GenreWrapper>
                         <P var2> Genre: {currentGenre} </P>
                         <svg>
@@ -336,6 +339,7 @@ export default ({
                         </svg>
                     </GenreWrapper>
                     <EmotionWrapper>
+                        Emotie:
                         {currentEmotion === emotions[0] && (
                             <RadioButton crying type="radio" disabled />
                         )}

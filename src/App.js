@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { css } from "styled-components";
+import { Logo } from "./style";
 // Components
 import TileMap from "./components/TileMap";
 import Loader from "react-spinners/PulseLoader";
@@ -44,13 +45,14 @@ function App() {
 
     // TileMenu States
     const [isCreating, setIsCreating] = useState(false);
-    const [currentTitle, setCurrentTitle] = useState(null);
-    const [currentStory, setCurrentStory] = useState(null);
+    const [currentTitle, setCurrentTitle] = useState("");
+    const [currentStory, setCurrentStory] = useState("");
     const [currentGenre, setCurrentGenre] = useState("");
-    const [currentEmotion, setCurrentEmotion] = useState(null);
-    const [songData, setSongData] = useState(null);
+    const [currentEmotion, setCurrentEmotion] = useState("");
+    const [songData, setSongData] = useState({});
     const [houseVariant, setHouseVariant] = useState("TILE_HOUSE_1");
     const [selectedTile, setSelectedTile] = useState({});
+    const [previousTile, setPreviousTile] = useState({});
 
     // Drag & Drop States
     const [pressed, setPressed] = useState(false);
@@ -163,7 +165,9 @@ function App() {
           column: tile.column,
           tileInfoId: null,
           views: 1,
-          song: info.songData.title
+          song: info.songData.title,
+          genre: tile.genre,
+          emotion: tile.emotion
       };
       const tileId = await createTile(newTile);
 
@@ -208,10 +212,17 @@ function App() {
   }
 
   useEffect(() => {
-      if(selectedTile.id) {
+      if(selectedTile && selectedTile.id && selectedTile.variant !== "TILE_CREATABLE") {
+          setPreviousTile(selectedTile)
           const theTile = document.getElementById(selectedTile.id);
           theTile.style.top = `-15px`;
           theTile.style.left = `-15px`;
+
+          if(previousTile.id && previousTile.id !== selectedTile.id) {
+              const oldTile = document.getElementById(previousTile.id);
+              oldTile.style.top = `0px`;
+              oldTile.style.left = `0px`;
+          }
       }
   }, [selectedTile])
 
@@ -330,20 +341,24 @@ function App() {
         generateTile({
             row: selectedTile.row,
             column: selectedTile.column,
-            songTitle: data.songData.title
-        },data)
+            songTitle: data.songData.title,
+            genre: currentGenre,
+            emotion: currentEmotion,
+            houseVariant: houseVariant
+        }, data)
         setIsCreating(false);
         setCurrentTitle("");
         setCurrentStory("")
         setCurrentGenre("")
         setCurrentEmotion("");
-        setSongData(null);
+        setSongData({});
         setHouseVariant("");
-        setSelectedTile(null);
+        setSelectedTile({});
     }
 
   return (<>
       {loading && <Loader size={50} color="#26A65B" css={loaderStyle}/>}
+      <Logo />
       {isCreating && <TileMenu
           currentTitle={currentTitle}
           onCurrentTitleChange={handleCurrentTitleChange}

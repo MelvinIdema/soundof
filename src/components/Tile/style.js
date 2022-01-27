@@ -13,6 +13,7 @@ export const StyledTile = styled.div(
     ({ variant, views, genre, emotion }) => css`
         position: relative;
         z-index: 0;
+        transition: all 300ms ease-in-out;
 
         &:hover {
             outline: 6px dashed #d0dfff;
