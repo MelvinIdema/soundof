@@ -57,7 +57,6 @@ function App() {
     const [position, setPosition] = useState({ x: null, y: null });
 
     // User Generated States
-    const [variant, setVariant] = useState("");
     const [songTitle, setSongTitle] = useState("");
 
     /**
@@ -159,7 +158,7 @@ function App() {
    */
   async function generateTile(tile, info) {
       const newTile = {
-          variant: variant,
+          variant: houseVariant,
           row: tile.row,
           column: tile.column,
           tileInfoId: null,
