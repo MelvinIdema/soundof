@@ -69,37 +69,23 @@ function App() {
     const [tiles, setTiles] = useState(
         new Array(32).fill([]).map(() => new Array(32).fill(0))
     );
-    // useEffect(() => {
-    //     // setLoading(true);
-    //
-    //     // const unsubscribe = onSnapshot(collection(db, "tiles"), snapshot => {
-    //     //     const docs = snapshot.docChanges().map(doc => {
-    //     //         const data = doc.doc.data();
-    //     //         return {
-    //     //             id: doc.doc.id,
-    //     //             ...data
-    //     //         }
-    //     //     });
-    //     //     docs.forEach(tile => addTile(tile));
-    //     //     setLoading(false);
-    //     // })
-    //
-    //     // return () => unsubscribe();
-    // }, [])
-
-    const emotions = ["overjoyed", "happy", "neutral", "sad", "crying"];
     useEffect(() => {
-        generateTile({
-            variant: "TILE_HOUSE_1",
-            views: 31,
-            genre: "alternative",
-            emotion: "overjoyed",
-            row: 15,
-            column: 15,
-            tileInfoId: null,
-            song: "Rick Astley - Never Gonna Give You Up",
-        });
-    }, []);
+        setLoading(true);
+
+        const unsubscribe = onSnapshot(collection(db, "tiles"), snapshot => {
+            const docs = snapshot.docChanges().map(doc => {
+                const data = doc.doc.data();
+                return {
+                    id: doc.doc.id,
+                    ...data
+                }
+            });
+            docs.forEach(tile => addTile(tile));
+            setLoading(false);
+        })
+
+        return () => unsubscribe();
+    }, [])
 
     /**
      * This function takes a tile {object} and checks where on the grid a creatable tile
@@ -169,32 +155,27 @@ function App() {
    * Creates a creatable tile and calls the addTile function with the creatable tile.
    * Then it renders the creatables.
    * @param tile
+   * @param info
    */
   async function generateTile(tile, info) {
-    const newTile = {
-      variant: variant,
-      row: tile.row,
-      column: tile.column,
-      tileInfoId: null,
-      views: 1,
-      song: info.songData.title
-    };
-    const tileId = await createTile(newTile);
+      const newTile = {
+          variant: variant,
+          row: tile.row,
+          column: tile.column,
+          tileInfoId: null,
+          views: 1,
+          song: info.songData.title
+      };
+      const tileId = await createTile(newTile);
 
-    const newTileInfo = {
-        tileId: tileId,
-        ...info
-    }
+      const newTileInfo = {
+          tileId: tileId,
+          ...info
+      }
+      const tileInfoId = await createTileInfo(newTileInfo);
 
-    await updateTile(tileId, { tileInfoId: tileInfoId })
-
-        // const newTileInfo = {
-        //     title: `${tileId}`,
-        //     story: `Information for tile with id ${tileId}`,
-        //     tileId: tileId
-        // }
-        // const tileInfoId = await createTileInfo(newTileInfo);
-
+      await updateTile(tileId, { tileInfoId: tileInfoId, emotion: info.emotion, genre: info.genre })
+  }
   /**
    * Function to determine what should execute when a tile is clicked. For now
    * there's only one tile: the creatable.
@@ -211,30 +192,20 @@ function App() {
         setTileInfoLoading(true);
 
         if (tile.variant !== "TILE_CREATABLE") {
-            // setTileInfoLoading(true);
-            //
-            // const tileElementRect = document.getElementById(tile.id).getBoundingClientRect();
-            // setTileInfoPosition({ top: tileElementRect.top, left: tileElementRect.left });
-            //
-            // const tileInfoData = await getTileInfo(tile.tileInfoId);
-            // setTileInfo(tileInfoData);
-            //
-            // setTileInfoLoading(false);
-            // updateTile(tile.id, { views: tile.views + 1 })
+            setTileInfoLoading(true);
+
+            const tileElementRect = document.getElementById(tile.id).getBoundingClientRect();
+            setTileInfoPosition({ top: tileElementRect.top, left: tileElementRect.left });
+
+            const tileInfoData = await getTileInfo(tile.tileInfoId);
+            setTileInfo(tileInfoData);
+
+            setTileInfoLoading(false);
+            updateTile(tile.id, { views: tile.views + 1 })
         }
 
-        // if(tile.variant === "TILE_HOUSE_1") {
-        //     if(tile.level !== 4) {
-        //         // updateTile(tile, { level: parseInt(tile.level + 1) })
-        //     }
-        // }
     }
 
-    if(tile.variant === "TILE_HOUSE_1") {
-        if(tile.level !== 4) {
-            // updateTile(tile, { level: parseInt(tile.level + 1) })
-        }
-    }
   }
 
   useEffect(() => {
@@ -363,12 +334,12 @@ function App() {
             songTitle: data.songData.title
         },data)
         setIsCreating(false);
-        setCurrentTitle(null);
-        setCurrentStory(null)
+        setCurrentTitle("");
+        setCurrentStory("")
         setCurrentGenre("")
-        setCurrentEmotion(null);
+        setCurrentEmotion("");
         setSongData(null);
-        setHouseVariant(null);
+        setHouseVariant("");
         setSelectedTile(null);
     }
 

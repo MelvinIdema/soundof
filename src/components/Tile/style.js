@@ -50,7 +50,7 @@ export const StyledTile = styled.div(
             height: 264px;
             top: 22px;
             left: 24px;
-            background-image: url("house_1/TILE_HOUSE_1${genres.indexOf(genre) + 1}.1.${emotions.indexOf(emotion) + 1}.png");
+            background-image: url("${process.env.PUBLIC_URL}/house_1/TILE_HOUSE_1${genres.indexOf(genre) + 1}.1.${emotions.indexOf(emotion) + 1}.png");
           }
 
           ${views >= 10 && css`
@@ -58,7 +58,7 @@ export const StyledTile = styled.div(
               height: 292px;
               top: 12px;
               left: 14px;
-              background-image: url("house_1/TILE_HOUSE_1${genres.indexOf(genre) + 1}.2.${emotions.indexOf(emotion) + 1}.png");
+              background-image: url("${process.env.PUBLIC_URL}/house_1/TILE_HOUSE_1${genres.indexOf(genre) + 1}.2.${emotions.indexOf(emotion) + 1}.png");
             }
           `}
 
@@ -67,7 +67,7 @@ export const StyledTile = styled.div(
               height: 330px;
               top: 0px;
               left: 1px;
-              background-image: url("house_1/TILE_HOUSE_1${genres.indexOf(genre) + 1}.3.${emotions.indexOf(emotion) + 1}.png");
+              background-image: url("${process.env.PUBLIC_URL}/house_1/TILE_HOUSE_1${genres.indexOf(genre) + 1}.3.${emotions.indexOf(emotion) + 1}.png");
             }
           `}
 
@@ -76,7 +76,7 @@ export const StyledTile = styled.div(
               height: 386px;
               top: -16px;
               left: -14px;
-              background-image: url("house_1/TILE_HOUSE_1${genres.indexOf(genre) + 1}.4.${emotions.indexOf(emotion) + 1}.png");
+              background-image: url("${process.env.PUBLIC_URL}/house_1/TILE_HOUSE_1${genres.indexOf(genre) + 1}.4.${emotions.indexOf(emotion) + 1}.png");
             }
           `}
           
