@@ -49,6 +49,18 @@ export const StyledTile = styled.div(
             }
         `}
 
+        ${variant === "TILE_FOUNTAIN" && 
+            css`
+              &:after {
+                background-image: url('fontein.png');
+                width: 164px;
+                height: 220px;
+                top: 38px;
+                left: 36px;
+              }
+            `
+        }
+
         ${variant === "TILE_HOUSE_1" &&
         css`
             &:after {
