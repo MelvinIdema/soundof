@@ -49,7 +49,7 @@ function App() {
     const [currentGenre, setCurrentGenre] = useState("");
     const [currentEmotion, setCurrentEmotion] = useState(null);
     const [songData, setSongData] = useState(null);
-    const [houseVariant, setHouseVariant] = useState(null);
+    const [houseVariant, setHouseVariant] = useState("TILE_HOUSE_1");
     const [selectedTile, setSelectedTile] = useState({});
 
     // Drag & Drop States
