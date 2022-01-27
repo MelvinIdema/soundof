@@ -185,6 +185,7 @@ function App() {
    * @param tile
    */
   async function handleTileClick(tile) {
+    if(tile.variant === "TILE_PATH") return;
     if(tile.variant === "TILE_CREATABLE") {
         setSelectedTile(tile);
         setIsCreating(true);
@@ -287,6 +288,7 @@ function App() {
 
     function handleTileHover(event, tile) {
         if (tile.variant === "TILE_CREATABLE") return;
+        if (tile.variant === "TILE_PATH") return;
 
         if (event === "LEAVE") {
             setTilePopup(null);

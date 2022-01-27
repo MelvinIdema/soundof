@@ -32,11 +32,13 @@ export const StyledTile = styled.div(
             z-index: 3;
         }
 
-        &:hover {
+        ${variant !== "TILE_PATH" && css`
+          &:hover {
             &:after {
-                opacity: 0.8;
+              opacity: 0.8;
             }
-        }
+          }
+        `} 
 
         ${variant === "TILE_BUSH" &&
         css`
@@ -267,6 +269,7 @@ export const StyledTile = styled.div(
     
   ${variant === "TILE_PATH" &&
         css`
+            background: #3e3e3e;
             &:after {
                 background-image: url(${Path});
                 width: 164px;
