@@ -16,65 +16,65 @@ const youtubeButtonColor = "#b33c41";
 const buttonHoverBackgroundColor = "#fff";
 
 export const TileMenuWrapper = styled.section `
-    display: flex;
-    flex-direction: column;
-    padding: 10px 20px;
-    background-color: ${backgroundColor};
-    font-family: ${fontFamily};
-    font-weight: 500;
-    border-radius: 20px;
     position: absolute;
-    align-self: end;
-    align-items: center;
-    color: ${fontColor1};
-    margin: 10px 10px;
-    z-index: 1;
-    width: 600px;
-    right: 0;
+    top: 30px; right: 30px;
+    height: calc(100% - 60px);
+    max-height: 100vh;
+    width: 30vw;
+    min-width: 500px;
+    border-radius: 15px;
+    padding: 5px 20px;
+    background-color: #A3C7CF;
+    color: black;
+    text-align: center;
+    font-weight: 500;
+    overflow-y: scroll;
+    z-index: 9999;
 `;
 
 export const StepWrapper = styled.div `
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  height: calc(100% - 76px);
 `;
 
 export const Button = styled.button `
-    font-size: 1.4em;
-    border: 3px solid transparent;
-    text-align: center;
+    box-sizing: border-box;
     font-family: ${fontFamily};
+    text-align: center;
     font-weight: bold;
+    font-size: 16px;
+    border: none;
 
     ${(props) =>
         props.primary &&
         css`
-            width: 522px;
+            width: 100%;
             border-radius: 20px;
-            padding: 15px 20px;
+            padding: 10px 15px;
             margin: 10px auto;
             background-color: ${primaryButtonColor};
             color: ${fontColor1};
             &:hover {
                 background-color: ${buttonHoverBackgroundColor};
                 color: ${primaryButtonColor};
-                border: 3px solid ${primaryButtonColor};
             }
         `}
 
     ${(props) =>
         props.secondary &&
         css`
-            width: 522px;
+            width: 100%;
             border-radius: 20px;
-            padding: 15px 20px;
+            padding: 10px 15px;
             margin: 10px auto;
             background-color: ${secondaryButtonColor};
             color: ${fontColor1};
             &:hover {
                 background-color: ${buttonHoverBackgroundColor};
                 color: ${secondaryButtonColor};
-                border: 3px solid ${secondaryButtonColor};
+                cursor: pointer;
             }
         `}
     ${(props) =>
@@ -88,20 +88,19 @@ export const Button = styled.button `
             &:hover {
                 background-color: ${buttonHoverBackgroundColor};
                 color: ${youtubeButtonColor};
-                border: 3px solid ${youtubeButtonColor};
             }
         `}
     ${(props) =>
         props.arrowLeft &&
         css`
+            position: absolute;
+            transform: translateY(-50%);
             background-color: ${secondaryButtonColor};
             clip-path: polygon(100% 0, 50% 50%, 100% 100%);
-            width: 100px;
-            height: 100px;
-            position: absolute;
-            left: 0;
-            margin-left: 100px;
-            margin-top: 50px;
+            width: 50px;
+            height: 35px;
+            left: 10px;
+            top: 50%;
             &:hover {
                 opacity: 0.5;
             }
@@ -109,14 +108,14 @@ export const Button = styled.button `
     ${(props) =>
         props.arrowRight &&
         css`
+            transform: translateY(-50%);
             background-color: ${secondaryButtonColor};
             clip-path: polygon(0 0, 50% 50%, 0 100%);
-            width: 100px;
-            height: 100px;
+            width: 50px;
+            height: 35px;
             position: absolute;
-            right: 0;
-            margin-right: 100px;
-            margin-top: 50px;
+            right: 10px;
+            top: 50%;
             &:hover {
                 opacity: 0.5;
             }
@@ -124,8 +123,10 @@ export const Button = styled.button `
 `;
 
 export const H1 = styled.h1`
-    font-size: 2.4em;
+    font-size: 1.6em;
     font-family: ${fontFamily};
+    margin-bottom: 16px;
+    margin-top: 16px;
 `;
 export const H2 = styled.h2`
     font-size: 1.6em;
@@ -135,24 +136,26 @@ export const H2 = styled.h2`
 export const P = styled.p`
     font-size: 1.2em;
     font-family: ${fontFamily};
-    font-weight: 500;
+    font-weight: bold;
 
     ${(props) =>
         props.var2 &&
         css`
-            margin: 5px;
+          margin: 5px;
+          text-align: left;
         `}
 `;
 export const TextArea = styled.textarea`
+    box-sizing: border-box;
     font-size: 1em;
-    padding: 5px 10px;
-    /*border-radius: 5px;*/
-    height: 90px;
+    padding: 10px 20px;
+    border-radius: 20px;
+    height: 100%;
     resize: none;
     border: none;
     background-color: ${inputBackgroundColor};
     margin-bottom: 5px;
-    width: 500px;
+    width: 100%;
     font-family: ${fontFamily};
     font-weight: 500;
     color: ${fontColor2};
@@ -165,15 +168,16 @@ export const TextArea = styled.textarea`
     }
 `;
 export const TextInput = styled.input`
+    box-sizing: border-box;
     border: none;
-    padding: 5px 10px;
-    /*border-radius: 5px;*/
-    font-size: 1em;
+    padding: 10px 20px;
+    font-size: 14px;
     font-family: ${fontFamily};
     font-weight: 500;
-    width: 500px;
+    width: 100%;
     background-color: ${inputBackgroundColor};
     color: ${fontColor2};
+    border-radius: 100px;
 
     ::selection {
         background: ${secondaryButtonColor};
@@ -186,19 +190,21 @@ export const TextInput = styled.input`
         props.normal &&
         css`
             margin-bottom: 5px;
-            width: 500px;
+          
+            margin-top: -1px;
         `}
     ${(props) =>
         props.search &&
         css`
             margin-bottom: 10px;
-            width: 464px;
+            width: calc(100% - 28px);
         `}
 `;
 export const RadioButton = styled.input`
+    appearance: none;
     -webkit-appearance: none;
-    width: 50px;
-    height: 50px;
+    width: 35px;
+    height: 35px;
     border: none;
     cursor: pointer;
     &:hover {
@@ -241,18 +247,18 @@ export const RadioButton = styled.input`
         `}
 `;
 export const DropDownMenu = styled.select`
+    box-sizing: border-box;
     border: none;
     font-family: ${fontFamily};
     font-weight: 500;
     padding: 5px 10px;
     /*border-radius: 5px;*/
     font-size: 1em;
-    width: 500px;
     background-color: ${inputBackgroundColor};
     margin-top: 10px;
     margin-bottom: 15px;
     color: ${fontColor2};
-    width: 520px;
+    width: 100%;
 `;
 
 export const DropDownOption = styled.option``;
@@ -265,25 +271,12 @@ export const UnorderedList = styled.ul`
     justify-content: center;
 `;
 
-export const Triangle = styled.div`
-    background-color: ${backgroundColor};
-    clip-path: polygon(100% 0, 50% 50%, 100% 100%);
-    width: 100px;
-    height: 100px;
-    position: absolute;
-    bottom: 50%;
-    z-index: 99;
-    left: -100px;
-`;
-
 export const ResponsiveVideo = styled.div`
     position: relative;
     overflow: hidden;
     padding-bottom: 56.25%;
-    height: 0;
-    max-width: 520px;
-    max-height: 296px;
-    margin: auto;
+    width: 100%;
+    margin-bottom: 12px;
 `;
 
 export const Iframe = styled.iframe`
@@ -297,12 +290,14 @@ export const Iframe = styled.iframe`
 `;
 
 export const Carousel = styled.div`
+    position: relative;
     display: flex;
-    margin-bottom: 20px;
     img {
         background-color: #edfaff;
         width: 200px;
         padding: 50px 160px;
+        border-radius: 20px;
+        margin: 0 auto 20px auto;
     }
 `;
 
@@ -318,4 +313,13 @@ export const GenreWrapper = styled.div`
 
 export const EmotionWrapper = styled.div`
     margin: 10px 0;
+    text-align: left;
+    font-weight: bold;
 `;
+
+export const Grid = styled.div`
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-gap: 16px;
+  align-items: center;
+`

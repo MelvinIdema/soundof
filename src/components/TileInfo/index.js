@@ -23,7 +23,7 @@ export default function TileInfo(props) {
         loading } = props;
 
     return (
-        <StyledTileInfo ref={theRef} style={{ left: position.left, top: position.top }}>
+        <StyledTileInfo genre={genre.toLowerCase()} ref={theRef} style={{ left: position.left, top: position.top }}>
             {loading && <Loader size={25} color="#26A65B" css={loaderStyle}/>}
             { !loading && <>
                 <Header>

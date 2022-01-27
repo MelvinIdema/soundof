@@ -4,8 +4,6 @@ import { StyledTile } from "./style";
 export default function Tile(props) {
   const { tile, onTileClick, onTileHover } = props;
 
-  useEffect(() => console.log(tile), [tile])
-
   return (
     <StyledTile
       id={tile.id}
