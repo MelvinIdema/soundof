@@ -64,7 +64,7 @@ export default ({
     const [isAnonymous, setAnonymous] = useState(false);
 
     //House use states
-    const houses = [house1_1, house1_2, house1_3, house1_4];
+    const houses = [house1_1];
     const [houseIndex, setHouseIndex] = useState(0);
 
     //Error use states
