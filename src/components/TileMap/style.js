@@ -6,6 +6,9 @@ export const StyledMap = styled.div`
   background-color: #EDFAFF;
   overflow: hidden;
   cursor: grab;
+  opacity: 1;
+  z-index: 1;
+  -webkit-transform: translate3d(0,0,0);
 `
 
 export const StyledGrid = styled.div(({ isometric }) => css`
