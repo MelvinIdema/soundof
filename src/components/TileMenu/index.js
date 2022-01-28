@@ -18,7 +18,7 @@ import {
     EmotionWrapper,
     Grid
 } from "./style";
-import house1 from "./assets/huis1.1.png";
+import house1 from "./assets/TILE_HOUSE_11.1.1.png";
 import house2 from "./assets/TILE_HOUSE_2.png";
 import house3 from "./assets/TILE_HOUSE_31.png";
 import house4 from "./assets/TILE_HOUSE_4.png";
