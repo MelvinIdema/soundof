@@ -13,8 +13,9 @@ const genres = ["r&b", "alternative", "rock", "volksmuziek", "electronisch", "la
 
 export const StyledTile = styled.div(
     ({ variant, views, genre, emotion }) => css`
+        -webkit-transform: translate3d(0,0,0);
+        opacity: .99;
         position: relative;
-        z-index: 0;
         transition: all 300ms ease-in-out;
 
         &:hover {
@@ -31,7 +32,8 @@ export const StyledTile = styled.div(
             background-size: 100% 100%;
             background-position: center;
             pointer-events: none;
-            z-index: 3;
+            z-index: 4;
+            opacity: 1;
         }
 
         ${variant !== "TILE_PATH" && variant !== "TILE_PATH2" && variant !== "TILE_PATH3" && css`

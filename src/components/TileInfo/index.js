@@ -27,7 +27,7 @@ export default function TileInfo(props) {
             {loading && <Loader size={25} color="#26A65B" css={loaderStyle}/>}
             { !loading && <>
                 <Header>
-                    <H1>{title}</H1>
+                    <H1>{title !== "" ? title : "Anoniem"}</H1>
                     <Button onClick={onCloseClick}>X</Button>
                 </Header>
                 <ResponsiveVideo>

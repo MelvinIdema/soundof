@@ -7,4 +7,5 @@ export const Logo = styled.div`
   background-image: url("logo.png");
   background-repeat: no-repeat;
   background-size: cover;
+  z-index: 2;
 `

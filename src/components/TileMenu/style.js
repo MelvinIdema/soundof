@@ -17,8 +17,8 @@ const buttonHoverBackgroundColor = "#fff";
 
 export const TileMenuWrapper = styled.section `
     position: absolute;
-    top: 30px; right: 30px;
-    height: calc(100% - 60px);
+    top: 15px; right: 15px;
+    height: calc(100% - 40px);
     max-height: 100vh;
     width: 30vw;
     min-width: 500px;
@@ -46,6 +46,10 @@ export const Button = styled.button `
     font-weight: bold;
     font-size: 16px;
     border: none;
+  
+      &:hover {
+        cursor: pointer;
+      }
 
     ${(props) =>
         props.primary &&
@@ -80,15 +84,13 @@ export const Button = styled.button `
     ${(props) =>
         props.search &&
         css`
-            font-size: 1em;
-            height: 30px;
-            margin: 10px auto 0;
-            background-color: ${youtubeButtonColor};
-            color: ${fontColor1};
-            &:hover {
-                background-color: ${buttonHoverBackgroundColor};
-                color: ${youtubeButtonColor};
-            }
+          background-color: white;
+          padding: 6px;
+          color: #626262;
+          &:hover {
+            background-color: ${buttonHoverBackgroundColor};
+            color: ${youtubeButtonColor};
+          }
         `}
     ${(props) =>
         props.arrowLeft &&
@@ -195,8 +197,7 @@ export const TextInput = styled.input`
     ${(props) =>
         props.search &&
         css`
-            margin-bottom: 10px;
-            width: calc(100% - 48px);
+            width: 100%;
         `}
 `;
 export const RadioButton = styled.input`
@@ -247,17 +248,20 @@ export const RadioButton = styled.input`
 `;
 export const DropDownMenu = styled.select`
     box-sizing: border-box;
-    border: none;
     font-family: ${fontFamily};
-    font-weight: 500;
-    padding: 5px 10px;
-    /*border-radius: 5px;*/
-    font-size: 1em;
     background-color: ${inputBackgroundColor};
     margin-top: 10px;
     margin-bottom: 15px;
     color: ${fontColor2};
-    width: 100%;
+    padding: 10px 20px;
+      font-size: 14px;
+      font-family: ${fontFamily};
+      font-weight: 500;
+      width: 100%;
+      background-color: ${inputBackgroundColor};
+      color: ${fontColor2};
+      border-radius: 100px;
+    border: none;
 `;
 
 export const DropDownOption = styled.option``;
@@ -321,4 +325,25 @@ export const Grid = styled.div`
   grid-template-columns: 2fr 1fr;
   grid-gap: 16px;
   align-items: center;
+`
+
+export const SongSearch = styled.div`
+  position: relative;
+  width: 100%;
+  margin-bottom: 16px;
+  margin-top: 6px;
+
+  & button {
+    position: absolute;
+    right: 0;
+    border-radius: 50px;
+    background: #e7e7e7;
+    padding-left: 12px;
+    padding-right: 12px;
+    height: 100%;
+  }
+  
+  & svg {
+    
+  }
 `

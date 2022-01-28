@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Iframe, ResponsiveVideo, TextInput } from "./style";
+import { Button, Iframe, ResponsiveVideo, TextInput, SongSearch } from "./style";
 
 const YOUTUBE_API = "https://www.googleapis.com/youtube/v3";
 const YOUTUBE_API_KEY = process.env.REACT_APP_YT_KEY;
@@ -63,7 +63,7 @@ export const YoutubeSearch = (props) => {
 
     return (
         <div>
-            <div>
+            <SongSearch>
                 <TextInput
                     search
                     maxlength="140"
@@ -73,8 +73,12 @@ export const YoutubeSearch = (props) => {
                     onChange={event => setCurrentYoutubeKeywords(event.target.value)}
                     style={isSongError === true ? errorStyleInput : null}
                 />
-                <Button search onClick={getSongData}>🔍</Button>
-            </div>
+                <Button search onClick={getSongData}>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 44" height="21px" width="21px">
+                        <path fill="currentColor" d="M32.5 30c2.494-3.129 4-7.654 4-12 0-10.05-8.139-18-18-18C8.638 0 .5 7.95.5 18s8.138 18 18 18c4.193 0 7.953-1.534 11-4l11 12 3-3-11-11zm-14 2c-7.658 0-14-6.196-14-14s6.342-14 14-14 14 6.196 14 14-6.342 14-14 14z"/>
+                    </svg>
+                </Button>
+            </SongSearch>
             <ResponsiveVideo>
                 <Iframe
                     width="520"
